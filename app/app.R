@@ -1,8 +1,26 @@
 library(shiny)
 library(dplyr)
-library(stringr)
 library(shinyjs)
 library(readxl)
+
+# Base-R replacements for the handful of stringr functions this app used
+# (str_extract, str_pad, str_to_title), to avoid pulling in stringr's heavy
+# stringi dependency (~13MB) into the shinylive WebAssembly bundle.
+extract_digits <- function(x) {
+  r <- regexpr("\\d+", x)
+  out <- rep(NA_character_, length(x))
+  matched <- !is.na(r) & r > 0
+  out[matched] <- regmatches(x, r)
+  out
+}
+
+pad4 <- function(x) {
+  ifelse(is.na(x), NA_character_, sprintf("%04d", suppressWarnings(as.integer(x))))
+}
+
+title_case <- function(x) {
+  paste0(toupper(substring(x, 1, 1)), substring(x, 2))
+}
 
 
 # Load data
@@ -49,7 +67,7 @@ postcode_irsad_lookup <- suppressWarnings(
 ) %>%
   select(postcode_raw = 1, irsad_raw = 5) %>%
   mutate(
-    postcode = str_pad(str_extract(as.character(postcode_raw), "\\d+"), width = 4, side = "left", pad = "0"), # Pramo made the relevant changes
+    postcode = pad4(extract_digits(as.character(postcode_raw))), # Pramo made the relevant changes
     IRSAD = paste0("D", as.integer(irsad_raw)) # Pramo made the relevant changes
   ) %>%
   filter(!is.na(postcode), IRSAD %in% paste0("D", 1:10)) %>%
@@ -358,11 +376,11 @@ server <- function(input, output, session) {
                   found = TRUE))
     }
 
-    postcode_digits <- str_extract(if (is.null(input$postcode)) "" else input$postcode, "\\d+")
+    postcode_digits <- extract_digits(if (is.null(input$postcode)) "" else input$postcode)
     postcode <- ifelse(
       is.na(postcode_digits),
       "",
-      str_pad(postcode_digits, width = 4, side = "left", pad = "0")
+      pad4(postcode_digits)
     )
 
     match <- postcode_irsad_lookup %>%
@@ -511,7 +529,7 @@ server <- function(input, output, session) {
 
     plot(NA, NA, xlim = c(60, 105), ylim = range(y_ticks),
          xlab = "", ylab = "",
-         main = paste(str_to_title(input$le_type), "Mortality Curve (qx)"),
+         main = paste(title_case(input$le_type), "Mortality Curve (qx)"),
          yaxt = "n", bty = "l")
     title(xlab = "Age", line = 2.2, cex.lab = 1.2)
     title(ylab = "Annual probability of death (qx)", line = 4.5, cex.lab = 1.2)
