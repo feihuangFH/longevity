@@ -261,7 +261,7 @@ ui <- fluidPage(
              ),
 
              sliderInput("startAge",
-                         "Life Expectancy From Age:",
+                         "Life Expectancy at Age:",
                          min = 60,
                          max = 90,
                          value = 60,
