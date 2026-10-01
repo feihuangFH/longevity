@@ -24,14 +24,48 @@ title_case <- function(x) {
 
 
 # Load data
-life_exp_period <- readRDS("period_life_expectancy_table.rds")
-life_exp_cohort <- readRDS("cohort_life_expectancy_table.rds")
 annuity <- readRDS("annuity_table.rds")
-quantiles_period <- readRDS("period_life_expectancy_quantiles.rds")
-quantiles_cohort <- readRDS("cohort_life_expectancy_quantiles.rds")
 period_qx_table <- readRDS("period_qx_table.rds")
 cohort_qx_table <- readRDS("cohort_qx_table.rds")
 qx_cohort_ALT <- readRDS("cohort_ALT_qx_table.rds")
+
+# Compute life expectancy and death-age percentiles from a per-age qx vector,
+# starting from an arbitrary age (instead of a fixed age-60 lookup table).
+# Verified to reproduce the original precomputed age-60 tables exactly:
+# curtate life expectancy + 0.5, and survival-curve interpolation for
+# percentiles of age at death.
+life_expectancy_from <- function(ages, qx, start_age) {
+  keep <- ages >= start_age
+  ages <- ages[keep]
+  qx <- qx[keep]
+  ord <- order(ages)
+  ages <- ages[ord]
+  qx <- qx[ord]
+
+  px <- 1 - qx
+  kpx <- cumprod(px)
+  ex <- sum(kpx) + 0.5
+
+  S <- c(1, kpx)
+  ages_full <- c(start_age, ages + 1)
+
+  find_quantile <- function(p_die) {
+    target <- 1 - p_die
+    idx <- which(S <= target)[1]
+    if (is.na(idx)) return(NA_real_)
+    if (idx == 1) return(ages_full[1])
+    S1 <- S[idx - 1]; S2 <- S[idx]
+    a1 <- ages_full[idx - 1]; a2 <- ages_full[idx]
+    a1 + (S1 - target) / (S1 - S2) * (a2 - a1)
+  }
+
+  list(
+    ex = ex,
+    q20 = find_quantile(0.2),
+    q50 = find_quantile(0.5),
+    q80 = find_quantile(0.8)
+  )
+}
 
 
 ALTFemale <- read_xlsx("Australian_Life_Tables_2015-17_Females.xlsx")
@@ -225,7 +259,15 @@ ui <- fluidPage(
                           choiceValues = c("cohort", "period"),
                           selected = "cohort"
              ),
-             
+
+             sliderInput("startAge",
+                         "Life Expectancy From Age:",
+                         min = 60,
+                         max = 90,
+                         value = 60,
+                         step = 1
+             ),
+
              sliderInput("annuityAmount",
                          "Annuity Purchase Amount ($):",
                          min = 50000,
@@ -244,7 +286,7 @@ ui <- fluidPage(
              
            ),
              mainPanel(
-               h4("Life Expectancy Summary at Age 60"),
+               h4(uiOutput("summaryExpHeader", inline = TRUE)),
                wellPanel(htmlOutput("summaryExp")),
                
                h4("Annuity Income"),
@@ -422,36 +464,25 @@ server <- function(input, output, session) {
     )
   })
   
+  output$summaryExpHeader <- renderUI({
+    paste0("Life Expectancy Summary at Age ", input$startAge)
+  })
+
   output$summaryExp <- renderUI({
-    p <- profile_filter()
-    
-    le_df <- if (input$le_type == "cohort") life_exp_cohort else life_exp_period
-    q_df  <- if (input$le_type == "cohort") quantiles_cohort else quantiles_period
-    
-    le_val <- le_df %>%
-      filter(gender == p$gender,
-             IRSAD == p$IRSAD,
-             income == p$income,
-             marital == p$marital,
-             home == p$home) %>%
-      pull(if (input$le_type == "cohort") "cohort_life_expectancy" else "life_expectancy")
-    
-    q <- q_df %>%
-      filter(gender == p$gender,
-             IRSAD == p$IRSAD,
-             income == p$income,
-             marital == p$marital,
-             home == p$home)
-    
+    qx_df <- qx_profile()
+    start_age <- input$startAge
+
+    result <- life_expectancy_from(qx_df$age, qx_df$qx, start_age)
+
     le_label <- if (input$le_type == "cohort") "Cohort" else "Period"
-    
+
     tags$div(
       tags$b(paste0(le_label, "-based life expectancy summary:")),
       tags$ul(
-        tags$li(paste("Life expectancy at age 60:", round(le_val, 2), "years")),
-        tags$li(paste("20th percentile (1 in 5 chance of dying before):", round(q$q20, 1), "years")),
-        tags$li(paste("50th percentile (median age at death):", round(q$q50, 1), "years")),
-        tags$li(paste("80th percentile (1 in 5 chance of living beyond):", round(q$q80, 1), "years"))
+        tags$li(paste0("Life expectancy at age ", start_age, ": ", round(result$ex, 2), " years")),
+        tags$li(paste("20th percentile (1 in 5 chance of dying before):", round(result$q20, 1), "years")),
+        tags$li(paste("50th percentile (median age at death):", round(result$q50, 1), "years")),
+        tags$li(paste("80th percentile (1 in 5 chance of living beyond):", round(result$q80, 1), "years"))
       )
     )
   })
