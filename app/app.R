@@ -1,7 +1,6 @@
 library(shiny)
 library(dplyr)
 library(stringr)
-library(ggplot2)
 library(shinyjs)
 library(readxl)
 
@@ -477,39 +476,55 @@ server <- function(input, output, session) {
   })
   
   output$qxPlot <- renderPlot({
+    alt_label <- "ALT 2015–17"
+
     qx_model <- qx_profile() %>%
       mutate(source = ifelse(input$le_type == "cohort",
                              "Modelled Probability of Death (cohort)",
                              "Modelled Probability of Death (period)"))
-    
+
     qx_plot_data <- if (input$le_type == "period") {
       qx_alt <- ALTdf %>%
         filter(gender == input$gender) %>%
         rename(age = x, qx = q) %>%
-        mutate(source = "ALT 2015–17")
-      
+        mutate(source = alt_label)
+
       bind_rows(qx_model, qx_alt)
     } else {
       qx_model
     }
-    
-    ggplot(qx_plot_data, aes(x = age, y = qx, color = source)) +
-      geom_line() +
-      scale_color_manual(values = c(
-        "Modelled Probability of Death (cohort)" = "#003366",
-        "Modelled Probability of Death (period)" = "#CC0033",
-        "ALT 2015–17" = "black"
-      )) +
-      xlim(60, 105) +
-      scale_y_continuous(labels = scales::percent_format(accuracy = 0.01)) +
-      labs(
-        title = paste(str_to_title(input$le_type), "Mortality Curve (qx)"),
-        x = "Age",
-        y = "Annual probability of death (qx)",
-        color = "Source"
-      ) +
-      theme_minimal(base_size = 16) +
-      theme(legend.position = "bottom")
+
+    qx_plot_data <- qx_plot_data %>% filter(age >= 60, age <= 105)
+
+    color_map <- c(
+      "Modelled Probability of Death (cohort)" = "#003366",
+      "Modelled Probability of Death (period)" = "#CC0033"
+    )
+    color_map <- c(color_map, setNames("black", alt_label))
+    present_sources <- names(color_map)[names(color_map) %in% unique(qx_plot_data$source)]
+
+    y_max <- max(qx_plot_data$qx, na.rm = TRUE)
+    y_ticks <- pretty(c(0, y_max))
+
+    op <- par(mar = c(5, 6.5, 4, 2) + 0.1, cex.main = 1.4, cex.lab = 1.2, cex.axis = 1.1)
+    on.exit(par(op))
+
+    plot(NA, NA, xlim = c(60, 105), ylim = range(y_ticks),
+         xlab = "", ylab = "",
+         main = paste(str_to_title(input$le_type), "Mortality Curve (qx)"),
+         yaxt = "n", bty = "l")
+    title(xlab = "Age", line = 2.2, cex.lab = 1.2)
+    title(ylab = "Annual probability of death (qx)", line = 4.5, cex.lab = 1.2)
+    axis(2, at = y_ticks, labels = paste0(format(y_ticks * 100, nsmall = 2), "%"), las = 1)
+
+    for (s in present_sources) {
+      d <- qx_plot_data %>% filter(source == s) %>% arrange(age)
+      lines(d$age, d$qx, col = color_map[[s]], lwd = 2.5)
+    }
+
+    legend("topleft", legend = present_sources,
+           col = color_map[present_sources], lwd = 2.5,
+           bty = "n", cex = 1, seg.len = 1.5)
   })
   
   observeEvent(input$impactBtn, {
