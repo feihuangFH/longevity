@@ -514,25 +514,29 @@ server <- function(input, output, session) {
     # shown above 100: the mortality model is fitted to data only up to age 100,
     # and anyone who lives beyond it is an open-ended group, not a fixed end point.
     yrs <- paste0("2016", intToUtf8(8211), "2017")   # en dash built in code to keep the source ASCII
-    ex_txt <- if (result$ex >= 10) as.character(round(result$ex)) else sprintf("%.1f", result$ex)
-    # Same precision as the years, so the two numbers add up (e.g. 90 + 4.5 = 94.5).
-    end_age <- if (result$ex >= 10) as.character(round(start_age + result$ex)) else sprintf("%.1f", start_age + result$ex)
+    # Every number is shown to one decimal. With whole years the stated shares can be off
+    # by several percentage points at older ages (many deaths per year); one decimal keeps
+    # them within about 1 point. The years and the age reached also add up (60 + 23.4 = 83.4).
+    ex_txt <- sprintf("%.1f", result$ex)
+    end_age <- sprintf("%.1f", start_age + result$ex)
 
     # share = "1 in 5" or "half"; a = the age at which that share is reached
     die_line <- function(share, a) {
       if (a >= 100) {
         paste0("Fewer than ", share, " die before age 100")
+      } else if (round(a, 1) >= 100) {
+        paste0("About ", share, " die before age 100")
       } else {
-        paste0("About ", share, " die before age ", round(a))
+        paste0("About ", share, " die before age ", sprintf("%.1f", a))
       }
     }
     live_line <- function(share, a) {
       if (a >= 100) {
         paste0("At least ", share, " live to age 100 or older")
-      } else if (round(a) >= 100) {
+      } else if (round(a, 1) >= 100) {
         paste0("About ", share, " live to age 100 or older")
       } else {
-        paste0("About ", share, " live beyond age ", round(a))
+        paste0("About ", share, " live beyond age ", sprintf("%.1f", a))
       }
     }
 
