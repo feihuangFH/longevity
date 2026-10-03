@@ -494,7 +494,6 @@ server <- function(input, output, session) {
     # and anyone who lives beyond it is an open-ended group, not a fixed end point.
     yrs <- paste0("2016", intToUtf8(8211), "2017")   # en dash built in code to keep the source ASCII
     ex_txt <- if (result$ex >= 10) as.character(round(result$ex)) else sprintf("%.1f", result$ex)
-    end_age <- round(start_age + result$ex)
 
     # share = "1 in 5" or "half"; a = the age at which that share is reached
     die_line <- function(share, a) {
@@ -527,8 +526,7 @@ server <- function(input, output, session) {
     tags$div(
       tags$p(
         style = "font-size: 24px; font-weight: bold; margin-bottom: 6px;",
-        paste0("For people with the selected characteristics, life expectancy at age ", start_age,
-               " is about ", ex_txt, " more years (to around age ", end_age, ").")
+        paste0("At age ", start_age, ", life expectancy is about ", ex_txt, " more years.")
       ),
       tags$p(paste0("Life expectancy is an average, and ages at death vary widely. Of every 100 people ",
                     "with these characteristics who are alive at age ", start_age, ":")),
