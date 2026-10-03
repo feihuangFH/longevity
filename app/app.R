@@ -353,7 +353,7 @@ ui <- fluidPage(
                     
                     h4("Authors"),
                     p("Fei Huang, Francis Hui, Pramo Samarasinghe, and Andrés Villegas"),
-                    p("Fei and Andrés are Associate Professors at the School of Risk and Actuarial Studies, UNSW Sydney. Francis is an Associate Professor at the Research School of Finance, Actuarial Studies, and Statistics, Australian National University. Pramo was an Honours student at the Australian National University and is now a research assistant at UNSW Sydney, who was the lead developer of the medical explorer."),
+                    p("Fei and Andrés are Associate Professors at the School of Risk and Actuarial Studies, UNSW Sydney. Francis is an Associate Professor at the Research School of Finance, Actuarial Studies, and Statistics, Australian National University. Pramo was an Honours student at the Australian National University and is now a research assistant at UNSW Sydney."),
                     
                     h4("Acknowledgement"),
                     p("We thank the Australian Government Actuary Guy Thorburn and his team for their invaluable support in this project."),
