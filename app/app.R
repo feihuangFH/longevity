@@ -29,6 +29,22 @@ period_qx_table <- readRDS("period_qx_table.rds")
 cohort_qx_table <- readRDS("cohort_qx_table.rds")
 qx_cohort_ALT <- readRDS("cohort_ALT_qx_table.rds")
 
+# ALT 2015-17 mortality improvement factors (125-year scenario, % per year, by
+# gender and attained age). Negative values are reductions in mortality.
+improvement_factors <- readRDS("improvement_factors_125.rds")
+
+# Cohort qx for a person who is `start_age` in the 2016 base year: improvement
+# is applied to the force of mortality, mu = -log(1 - q), as
+# mu * (1 + IF/100)^k with k = years since `start_age` (so k = 0 at start_age).
+# This is the same construction as cohort_qx_table (which is the special case
+# start_age = 60), and matches the annuity convention (aged 65 in 2016).
+cohort_qx_from <- function(ages, qx_period, gender, start_age) {
+  f <- improvement_factors[improvement_factors$gender == gender, ]
+  imp <- f$IF[match(ages, f$age)]
+  k <- ages - start_age
+  1 - exp(log(1 - qx_period) * (1 + imp / 100)^k)
+}
+
 # Compute life expectancy and death-age percentiles from a per-age qx vector,
 # starting from an arbitrary age (instead of a fixed age-60 lookup table).
 # Verified to reproduce the original precomputed age-60 tables exactly:
@@ -468,11 +484,29 @@ server <- function(input, output, session) {
     paste0("Life Expectancy Summary at Age ", input$startAge)
   })
 
+  # Period qx for the selected profile (always period; the cohort basis is
+  # built from it below so improvement can restart at the selected age).
+  period_qx_profile <- reactive({
+    p <- profile_filter()
+    period_qx_table %>%
+      filter(gender == p$gender,
+             IRSAD == p$IRSAD,
+             income == p$income,
+             marital == p$marital,
+             home == p$home)
+  })
+
   output$summaryExp <- renderUI({
-    qx_df <- qx_profile()
+    qx_df <- period_qx_profile()
     start_age <- input$startAge
 
-    result <- life_expectancy_from(qx_df$age, qx_df$qx, start_age)
+    qx_used <- if (input$le_type == "cohort") {
+      cohort_qx_from(qx_df$age, qx_df$qx, profile_filter()$gender, start_age)
+    } else {
+      qx_df$qx
+    }
+
+    result <- life_expectancy_from(qx_df$age, qx_used, start_age)
 
     le_label <- if (input$le_type == "cohort") "Cohort" else "Period"
 
