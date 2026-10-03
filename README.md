@@ -1,7 +1,7 @@
 # Australian Longevity Explorer (GitHub Pages / shinylive version)
 
 A static, serverless build of the Australian Longevity Explorer's main **Explorer** tab
-(life expectancy and annuity income by socio-economic profile), compiled with
+(life expectancy by socio-economic profile), compiled with
 [shinylive](https://posit-dev.github.io/r-shinylive/) so it runs entirely in the visitor's
 browser via WebAssembly — no R server required, hosted free on GitHub Pages.
 
@@ -26,9 +26,9 @@ Then commit and push the updated `docs/` folder.
 
 ## Notes
 
-- Uses only `dplyr`, `stringr`, and `ggplot2` (not the full `tidyverse`) to keep the
-  WebAssembly package bundle smaller and avoid unnecessary dependencies.
-- First visit downloads the shared R/WebAssembly runtime (~100MB, cached by the browser
+- Uses only `dplyr`, `shinyjs`, and `readxl`, with base R graphics and string functions (no
+  `tidyverse`, `ggplot2`, or `stringr`), to keep the WebAssembly package bundle small.
+- First visit downloads the shared R/WebAssembly runtime (~70MB, cached by the browser
   afterwards via a Service Worker), so first load is slower than a normal web page.
-- Annuity pricing and life expectancy methodology match Huang, Hui & Villegas,
+- The life expectancy methodology follows Huang, Hui & Villegas,
   *Australian Retirement Mortality* (JRI submission).

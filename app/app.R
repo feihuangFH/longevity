@@ -24,25 +24,23 @@ title_case <- function(x) {
 
 
 # Load data
-annuity <- readRDS("annuity_table.rds")
 period_qx_table <- readRDS("period_qx_table.rds")
-cohort_qx_table <- readRDS("cohort_qx_table.rds")
 qx_cohort_ALT <- readRDS("cohort_ALT_qx_table.rds")
 
 # ALT 2015-17 mortality improvement factors (125-year scenario, % per year, by
 # gender and attained age). Negative values are reductions in mortality.
 improvement_factors <- readRDS("improvement_factors_125.rds")
 
-# Cohort qx for a person who is `start_age` in the 2016 base year: improvement
-# is applied to the force of mortality, mu = -log(1 - q), as
-# mu * (1 + IF/100)^k with k = years since `start_age` (so k = 0 at start_age).
-# This is the same construction as cohort_qx_table (which is the special case
-# start_age = 60), and matches the annuity convention (aged 65 in 2016).
+# Cohort qx for a person who is `start_age` in the 2016 base year, following the
+# paper's construction: q_{x+k}(2016) * (1 + I_{x+k}/100)^k, where I is the ALT
+# 2015-17 improvement factor at the attained age and k = years since `start_age`
+# (so k = 0 at start_age), i.e. a person aged `start_age` in 2016. The factors
+# are all zero or negative, so qx can only fall, and stays within [0, 1].
 cohort_qx_from <- function(ages, qx_period, gender, start_age) {
   f <- improvement_factors[improvement_factors$gender == gender, ]
   imp <- f$IF[match(ages, f$age)]
   k <- ages - start_age
-  1 - exp(log(1 - qx_period) * (1 + imp / 100)^k)
+  qx_period * (1 + imp / 100)^k
 }
 
 # Compute life expectancy and death-age percentiles from a per-age qx vector,
@@ -284,16 +282,6 @@ ui <- fluidPage(
                          step = 1
              ),
 
-             sliderInput("annuityAmount",
-                         "Annuity Purchase Amount ($):",
-                         min = 50000,
-                         max = 1000000,
-                         value = 100000,
-                         step = 25000,
-                         pre = "$",
-                         sep = ","
-             ),
-             
              # tags$div(
              #   style = "margin-top: 20px;",
              #   actionButton("impactBtn", "How did this tool help you?", icon = icon("comment"), 
@@ -302,11 +290,8 @@ ui <- fluidPage(
              
            ),
              mainPanel(
-               h4(uiOutput("summaryExpHeader", inline = TRUE)),
+               h4("Life Expectancy Summary"),
                wellPanel(htmlOutput("summaryExp")),
-               
-               h4("Annuity Income"),
-               wellPanel(htmlOutput("annuityVal")),
                
                actionButton("impactBtn", "How did this explorer help you?",
                             icon = icon("comment"),
@@ -327,7 +312,7 @@ ui <- fluidPage(
            fluidRow(
              column(10, offset = 1,
                     h3("About This Tool"),
-                    p("This app helps Australians understand projected life expectancy and retirement annuity income based on socio-economic and demographic factors."),
+                    p("This app helps Australians understand projected life expectancy based on socio-economic and demographic factors."),
                     p("It uses data from the Person Level Integrated Data Asset (PLIDA), accessed via the Australian Bureau of Statistics' DataLab. The life expectancies are computed based on the 2016-2017 census population with improvement factors of ALT2015-17 (125 year)."),
                     
                     h4("Related Publications"),
@@ -480,10 +465,6 @@ server <- function(input, output, session) {
     )
   })
   
-  output$summaryExpHeader <- renderUI({
-    paste0("Life Expectancy Summary at Age ", input$startAge)
-  })
-
   # Period qx for the selected profile (always period; the cohort basis is
   # built from it below so improvement can restart at the selected age).
   period_qx_profile <- reactive({
@@ -508,54 +489,74 @@ server <- function(input, output, session) {
 
     result <- life_expectancy_from(qx_df$age, qx_used, start_age)
 
-    le_label <- if (input$le_type == "cohort") "Cohort" else "Period"
+    # Plain-language wording. Ages are rounded (so "About ..."), and nothing is
+    # shown above 100: the mortality model is fitted to data only up to age 100,
+    # and anyone who lives beyond it is an open-ended group, not a fixed end point.
+    yrs <- paste0("2016", intToUtf8(8211), "2017")   # en dash built in code to keep the source ASCII
+    ex_txt <- if (result$ex >= 10) as.character(round(result$ex)) else sprintf("%.1f", result$ex)
+    end_age <- round(start_age + result$ex)
+
+    # share = "1 in 5" or "half"; a = the age at which that share is reached
+    die_line <- function(share, a) {
+      if (a >= 100) {
+        paste0("Fewer than ", share, " die before age 100")
+      } else {
+        paste0("About ", share, " die before age ", round(a))
+      }
+    }
+    live_line <- function(share, a) {
+      if (a >= 100) {
+        paste0("At least ", share, " live to age 100 or older")
+      } else if (round(a) >= 100) {
+        paste0("About ", share, " live to age 100 or older")
+      } else {
+        paste0("About ", share, " live beyond age ", round(a))
+      }
+    }
+
+    # Same definitions as the information notes beside the Cohort / Period options.
+    basis_note <- if (input$le_type == "cohort") {
+      paste0("Cohort basis: the figures above are calculated from ", yrs, " mortality rates, adjusted for ",
+             "the Australian Government Actuary's assumed future mortality improvements, based on the ",
+             "long-term (125-year) trend in Australian death rates.")
+    } else {
+      paste0("Period basis: the figures above are calculated from mortality rates observed during ", yrs,
+             ", assuming these rates remain unchanged in future.")
+    }
 
     tags$div(
-      tags$b(paste0(le_label, "-based life expectancy summary:")),
+      tags$p(
+        style = "font-size: 24px; font-weight: bold; margin-bottom: 6px;",
+        paste0("For people with the selected characteristics, life expectancy at age ", start_age,
+               " is about ", ex_txt, " more years (to around age ", end_age, ").")
+      ),
+      tags$p(paste0("Life expectancy is an average, and ages at death vary widely. Of every 100 people ",
+                    "with these characteristics who are alive at age ", start_age, ":")),
       tags$ul(
-        tags$li(paste0("Life expectancy at age ", start_age, ": ", round(result$ex, 2), " years")),
-        tags$li(paste("20th percentile (1 in 5 chance of dying before):", round(result$q20, 1), "years")),
-        tags$li(paste("50th percentile (median age at death):", round(result$q50, 1), "years")),
-        tags$li(paste("80th percentile (1 in 5 chance of living beyond):", round(result$q80, 1), "years"))
+        tags$li(die_line("1 in 5", result$q20)),
+        tags$li(die_line("half", result$q50)),
+        tags$li(live_line("1 in 5", result$q80))
+      ),
+      if (result$q50 >= 100 || result$q80 >= 100) {
+        tags$p(style = "font-size: 16px; color: #555;",
+               "The data used extend only to age 100, so estimates beyond that are less certain.")
+      },
+      tags$p(
+        style = "font-size: 15px; color: #555; margin-top: 12px; margin-bottom: 0;",
+        "This describes a group of people with the selected characteristics, not a prediction for any one person. ",
+        "It does not take account of individual health or lifestyle. ", basis_note
       )
     )
   })
   
-  output$annuityVal <- renderUI({
-    p <- profile_filter()
-    
-    base_income <- annuity %>%
-      filter(gender == p$gender,
-             IRSAD == p$IRSAD,
-             income == p$income,
-             marital == p$marital,
-             home == p$home) %>%
-      pull(annuity_income)
-    
-    scaled_income <- base_income * (input$annuityAmount / 100000)
-    
-    tags$div(
-      tags$b("Estimated Annuity Income:"),
-      tags$p(paste("With a purchase amount of $",
-                   format(input$annuityAmount, big.mark = ","),
-                   " at age 65, you would receive approximately $",
-                   format(round(scaled_income, 0), big.mark = ","),
-                   " annually (3% interest rate, no death benefit or indexation).", sep = "")),
-      tags$p(tags$em("Note: annuity pricing always uses projected (cohort) mortality improvements, regardless of the Type of Life Expectancy setting."),
-             style = "font-size: 14px; color: #555;")
-    )
-  })
-  
+  # Mortality curve shown in the chart. The cohort curve is for people aged 60 in
+  # 2016, built from the period qx with the same function as the summary above.
   qx_profile <- reactive({
-    p <- profile_filter()
-    qx_df <- if (input$le_type == "cohort") cohort_qx_table else period_qx_table
-    
-    qx_df %>%
-      filter(gender == p$gender,
-             IRSAD == p$IRSAD,
-             income == p$income,
-             marital == p$marital,
-             home == p$home)
+    qx_df <- period_qx_profile()
+    if (input$le_type == "cohort") {
+      qx_df$qx <- cohort_qx_from(qx_df$age, qx_df$qx, profile_filter()$gender, 60)
+    }
+    qx_df
   })
   
   output$qxPlot <- renderPlot({
