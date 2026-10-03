@@ -142,6 +142,13 @@ ui <- fluidPage(
     title = div(style = "font-weight: bold; font-size: 24px; color: #003366;",
                 "Australian Longevity Explorer"),
   id = "main_tabs",  # <-- ADD THIS
+
+  footer = tags$div(
+    style = "font-size: 14px; color: #555; border-top: 1px solid #ddd; margin: 24px 15px 0; padding: 12px 0 20px;",
+    HTML(paste0("General information only &mdash; not financial, medical or other professional advice. ",
+                "See the <a href=\"#\" onclick=\"Shiny.setInputValue('goDisclaimer', Math.random()); return false;\">",
+                "Disclaimer on the About page</a>."))
+  ),
   
   # div(
   #   style = "background-color: #e6f2ff; padding: 10px 20px; margin-bottom: 10px;",
@@ -193,6 +200,7 @@ ui <- fluidPage(
   
   # Main Explorer Tab
   tabPanel("Explorer",
+           fluidRow(
            sidebarPanel(
              selectInput("gender",  HTML('Sex 
           <a href="https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/by%20Subject/2008.0~2016~Main%20Features~Sex~141" 
@@ -305,6 +313,7 @@ ui <- fluidPage(
                )
                
              )
+           )
            ),
   
    # About Tab
@@ -349,6 +358,16 @@ ui <- fluidPage(
                     h4("Acknowledgement"),
                     p("We thank the Australian Government Actuary Guy Thorburn and his team for their invaluable support in this project."),
                     
+                    h4("Disclaimer"),
+                    p(HTML(paste0(
+                      "This tool provides general statistical information about life expectancy for groups of people ",
+                      "with the characteristics you select. It is not a prediction for any individual and does not take ",
+                      "account of personal circumstances such as health or lifestyle. It is not financial, retirement, ",
+                      "insurance, medical or legal advice and should not be the only basis for any decision. ",
+                      "Estimates are based on 2016&ndash;2017 data and modelling assumptions, and carry statistical ",
+                      "uncertainty. Before making decisions that depend on this information, consider speaking to a ",
+                      "suitably qualified professional."))),
+
                     h4("Project Lead Contact"),
                     p("Fei Huang (", tags$a(href = "mailto:feihuang@unsw.edu.au", "feihuang@unsw.edu.au"), " | ",
                       tags$a(href = "https://www.feihuang.org", "www.feihuang.org", target = "_blank"), ")")
@@ -614,6 +633,10 @@ server <- function(input, output, session) {
            bty = "n", cex = 1, seg.len = 1.5)
   })
   
+  observeEvent(input$goDisclaimer, {
+    updateNavbarPage(session, inputId = "main_tabs", selected = "About")
+  })
+
   observeEvent(input$impactBtn, {
     updateNavbarPage(session, inputId = "main_tabs", selected = "Feedback")
   })
