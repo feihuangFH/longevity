@@ -96,7 +96,7 @@ ALTMale <- ALTMale %>%
 ALT <- bind_rows(ALTFemale, ALTMale)
 ALTdf <- ALT %>% rename(gender = Gender)
 
-form_url <- "https://forms.office.com/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o2eKlYdc2aVLl1e_QJNzupJUNzZNQVVKNjNPRVZGVlc3NEQ4M1IyWVhMWS4u"
+form_url <- "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o2eKlYdc2aVLl1e_QJNzupJUNzZNQVVKNjNPRVZGVlc3NEQ4M1IyWVhMWS4u"
 
 # Click/tap-to-reveal info icon (works on mobile, unlike hover-only title tooltips)
 info_toggle <- function(id, label, text) {
@@ -393,14 +393,16 @@ Mortality Dataverse."),
                     p(tags$b("You can share as much or as little detail as you like."), "The form below is optional and anonymous unless you choose to include your name or email. With your consent, we may include anonymised stories in research reporting or impact assessments."),
                     wellPanel(
                       tags$iframe(
-                        src = "https://forms.microsoft.com/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o2eKlYdc2aVLl1e_QJNzupJUNzZNQVVKNjNPRVZGVlc3NEQ4M1IyWVhMWS4u",
+                        src = form_url,
                         width = "100%",
                         height = "650",
                         style = "border: none; overflow: hidden;",
                         frameborder = "0",
                         allowfullscreen = NA
                       )
-                    )
+                    ),
+                    tags$p(style = "font-size: 16px;",
+                           HTML(sprintf('If the form does not display, <a href="%s" target="_blank" rel="noopener">open it in a new tab</a>.', form_url)))
              )
            )
   )
@@ -494,6 +496,8 @@ server <- function(input, output, session) {
     # and anyone who lives beyond it is an open-ended group, not a fixed end point.
     yrs <- paste0("2016", intToUtf8(8211), "2017")   # en dash built in code to keep the source ASCII
     ex_txt <- if (result$ex >= 10) as.character(round(result$ex)) else sprintf("%.1f", result$ex)
+    # Same precision as the years, so the two numbers add up (e.g. 90 + 4.5 = 94.5).
+    end_age <- if (result$ex >= 10) as.character(round(start_age + result$ex)) else sprintf("%.1f", start_age + result$ex)
 
     # share = "1 in 5" or "half"; a = the age at which that share is reached
     die_line <- function(share, a) {
@@ -526,7 +530,8 @@ server <- function(input, output, session) {
     tags$div(
       tags$p(
         style = "font-size: 24px; font-weight: bold; margin-bottom: 6px;",
-        paste0("At age ", start_age, ", life expectancy is about ", ex_txt, " more years.")
+        paste0("At age ", start_age, ", life expectancy is about ", ex_txt,
+               " more years, reaching age ", end_age, " on average.")
       ),
       tags$p(paste0("Life expectancy is an average, and ages at death vary widely. Of every 100 people ",
                     "with these characteristics who are alive at age ", start_age, ":")),
