@@ -20,10 +20,11 @@
   var NOT_FOUND = "Postcode not found. Check the postcode or select the IRSAD decile option instead.";
 
   // ---------- tabs ----------
-  var TABS = ["explorer", "about", "download", "feedback"];
+  var TABS = ["calculator", "about", "download", "feedback"];
   function showTab() {
-    var name = (location.hash || "#explorer").slice(1);
-    if (TABS.indexOf(name) < 0) name = "explorer";
+    var name = (location.hash || "#calculator").slice(1);
+    if (name === "explorer") name = "calculator";   // address used before the tool was renamed
+    if (TABS.indexOf(name) < 0) name = "calculator";
     TABS.forEach(function (t) {
       $("tab-" + t).hidden = t !== name;
     });
@@ -34,10 +35,10 @@
     });
     window.scrollTo(0, 0);
     if (name !== lastTab) {
-      if (lastTab !== null || name !== "explorer") track("view_tab", { tab_name: name });
+      if (lastTab !== null || name !== "calculator") track("view_tab", { tab_name: name });
       lastTab = name;
     }
-    if (name === "explorer" && data) drawChart();
+    if (name === "calculator" && data) drawChart();
   }
 
   // ---------- inputs ----------
