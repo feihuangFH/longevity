@@ -5,6 +5,12 @@
   var data = null;
   var lastSeries = null, lastStart = 60;
 
+  // Google Analytics events. Only broad categories are sent, never a postcode or any profile choice.
+  function track(name, params) {
+    try { if (typeof gtag === "function") gtag("event", name, params || {}); } catch (e) { /* analytics must never break the page */ }
+  }
+  var lastTab = null;
+
   var COLORS = { cohort: "#003366", period: "#CC0033", alt: "#000000" };
   var NAMES = {
     cohort: "Modelled Probability of Death (cohort)",
@@ -27,6 +33,10 @@
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
     window.scrollTo(0, 0);
+    if (name !== lastTab) {
+      if (lastTab !== null || name !== "explorer") track("view_tab", { tab_name: name });
+      lastTab = name;
+    }
     if (name === "explorer" && data) drawChart();
   }
 
@@ -255,7 +265,14 @@
     }
     function paintSlider() { rng.parentNode.style.setProperty("--pct", "calc(" + (thumb / 2) + "px + (100% - " + thumb + "px) * " + ((rng.value - lo) / (hi - lo)) + ")"); }
     rng.addEventListener("input", paintSlider);
-    function stepAge(d) { var v = Math.max(lo, Math.min(hi, +rng.value + d)); if (v !== +rng.value) { rng.value = v; paintSlider(); update(); } }
+    // The age is reported once the slider has been still for a moment, not on every step of a drag
+    var ageTimer;
+    function trackAge() {
+      clearTimeout(ageTimer);
+      ageTimer = setTimeout(function () { track("select_start_age", { start_age: +rng.value }); }, 800);
+    }
+    rng.addEventListener("input", trackAge);
+    function stepAge(d) { var v = Math.max(lo, Math.min(hi, +rng.value + d)); if (v !== +rng.value) { rng.value = v; paintSlider(); update(); trackAge(); } }
     $("ageDown").addEventListener("click", function () { stepAge(-1); });
     $("ageUp").addEventListener("click", function () { stepAge(1); });
     paintSlider();
@@ -264,7 +281,15 @@
       $(id).addEventListener("input", update);
     });
     Array.prototype.forEach.call(document.querySelectorAll('input[type="radio"]'), function (r) {
-      r.addEventListener("change", update);
+      r.addEventListener("change", function () {
+        if (r.name === "le_type") track("select_basis", { basis: r.value });
+        if (r.name === "geo_mode") track("select_area_mode", { area_mode: r.value === "irsad" ? "irsad_decile" : "postcode" });
+        update();
+      });
+    });
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest ? e.target.closest("[data-track]") : null;
+      if (a) track(a.getAttribute("data-track"));
     });
     Array.prototype.forEach.call(document.querySelectorAll(".infobtn"), function (b) {
       b.addEventListener("click", function (e) {
@@ -277,7 +302,6 @@
     $("impactBtn").addEventListener("click", function () { location.hash = "#feedback"; });
     var timer;
     window.addEventListener("resize", function () { clearTimeout(timer); timer = setTimeout(drawChart, 120); });
-    window.addEventListener("hashchange", showTab);
     showTab();
     update();
   }
