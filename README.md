@@ -20,12 +20,13 @@ browser via WebAssembly — no R server required, hosted free on GitHub Pages.
 
 ## Rebuilding the site after an `app/app.R` change
 
-```r
-install.packages("shinylive")
-shinylive::export("app", "docs")
+```sh
+./build-site.sh
 ```
 
-Then commit and push the updated `docs/` folder.
+This needs R with the `shinylive` package. The script exports the site, sets the custom domain
+and page title, and removes shinylive files this app never uses. Then commit and push the
+updated `docs/` folder.
 
 ## Notes
 
