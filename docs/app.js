@@ -1,4 +1,4 @@
-// Interface for the Australian Longevity Explorer (static version).
+// Interface for the Australian Longevity Calculator (static version).
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };

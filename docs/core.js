@@ -1,4 +1,4 @@
-// Calculation core for the Australian Longevity Explorer (static version).
+// Calculation core for the Australian Longevity Calculator (static version).
 // Pure functions only, so that the same code runs in the browser and in Node tests.
 // The logic mirrors app/app.R (the R version) step for step.
 (function (root, factory) {

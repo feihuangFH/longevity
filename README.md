@@ -1,4 +1,4 @@
-# Australian Longevity Explorer
+# Australian Longevity Calculator
 
 Life expectancy at ages 60 to 90 for Australians with different socio-economic characteristics.
 A static website in plain JavaScript, hosted free on GitHub Pages at https://auslongevity.org.
