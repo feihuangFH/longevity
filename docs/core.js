@@ -74,9 +74,19 @@
     return "About " + share + " live beyond age " + one(a);
   }
 
-  // The text of the summary box, as plain strings.
+  // The figure shown large on a card: the age, or "100+" when the data end at 100.
+  function dieValue(a) { return a >= 100 ? "100+" : round1(a) >= 100 ? "100" : one(a); }
+  function liveValue(a) { return (a >= 100 || round1(a) >= 100) ? "100+" : one(a); }
+
+  // The text of the summary box, as plain strings, plus the figures used for the large display.
   function summaryText(startAge, basis, r) {
     return {
+      stats: { startAge: startAge, years: one(r.ex), endAge: one(startAge + r.ex) },
+      cards: [
+        { value: dieValue(r.q20), text: dieLine("1 in 5", r.q20) },
+        { value: dieValue(r.q50), text: dieLine("half", r.q50) },
+        { value: liveValue(r.q80), text: liveLine("1 in 5", r.q80) }
+      ],
       headline: "At age " + startAge + ", life expectancy is about " + one(r.ex) +
         " more years, reaching age " + one(startAge + r.ex) + " on average.",
       intro: "Life expectancy is an average, and ages at death vary widely. The figures below describe " +

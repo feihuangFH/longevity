@@ -28,7 +28,7 @@
     gtag('js', new Date());
     gtag('config', 'G-BZZL2WJJV6');
   </script>
-  <link rel="stylesheet" href="style.css?v=20261004c">
+  <link rel="stylesheet" href="style.css?v=20261004d">
 </head>
 <body>
 <header class="navbar">
@@ -60,6 +60,18 @@
     <div class="layout">
       <form class="well sidebar" onsubmit="return false" autocomplete="off">
         <div class="field">
+          <label for="startAge">Life Expectancy at Age: <strong id="ageValue">60</strong></label>
+          <div class="slider">
+            <button type="button" class="step" id="ageDown" aria-label="One year younger">&minus;</button>
+            <div class="sliderbox">
+              <input type="range" id="startAge" min="60" max="90" step="1" value="60">
+              <div class="ticks" id="ageTicks" aria-hidden="true"></div>
+            </div>
+            <button type="button" class="step" id="ageUp" aria-label="One year older">+</button>
+          </div>
+        </div>
+
+        <div class="field">
           <label for="gender">Sex
             <a class="info" href="https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/by%20Subject/2008.0~2016~Main%20Features~Sex~141" target="_blank" rel="noopener" title="ABS definition of sex">&#9432;</a></label>
           <select id="gender"><option>Male</option><option>Female</option></select>
@@ -89,7 +101,7 @@
           <label for="income">Total Personal Weekly Income
             <a class="info" href="https://www.abs.gov.au/census/guide-census-data/census-dictionary/2021/variables-topic/income-and-work/total-personal-income-weekly-incp" target="_blank" rel="noopener" title="ABS definition of total personal weekly income">&#9432;</a></label>
           <select id="income">
-            <option value="<499">&lt;499</option><option>500-999</option><option>1000+</option><option>missing</option>
+            <option value="<499">&lt;$499</option><option value="500-999">$500&ndash;$999</option><option value="1000+">$1,000+</option><option value="missing">missing</option>
           </select>
         </div>
 
@@ -119,17 +131,6 @@
           </div>
         </fieldset>
 
-        <div class="field">
-          <label for="startAge">Life Expectancy at Age: <strong id="ageValue">60</strong></label>
-          <div class="slider">
-            <button type="button" class="step" id="ageDown" aria-label="One year younger">&minus;</button>
-            <div class="sliderbox">
-              <input type="range" id="startAge" min="60" max="90" step="1" value="60">
-              <div class="ticks" id="ageTicks" aria-hidden="true"></div>
-            </div>
-            <button type="button" class="step" id="ageUp" aria-label="One year older">+</button>
-          </div>
-        </div>
       </form>
 
       <div class="results">
@@ -200,7 +201,7 @@
   General information only. This is not financial, medical or other professional advice. See the <a href="#about">Disclaimer on the About page</a>.
 </footer>
 
-<script src="core.js?v=20261004c"></script>
-<script src="app.js?v=20261004c"></script>
+<script src="core.js?v=20261004d"></script>
+<script src="app.js?v=20261004d"></script>
 </body>
 </html>

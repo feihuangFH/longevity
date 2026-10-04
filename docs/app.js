@@ -134,11 +134,28 @@
   function renderSummary(t) {
     var box = $("summary");
     box.textContent = "";
+    // two large figures, then the full sentence underneath
+    var stats = el("div", "stats");
+    function stat(big, unit, caption) {
+      var d = el("div", "stat"), b = el("div", "big", big);
+      b.setAttribute("aria-hidden", "true");
+      if (unit) b.appendChild(el("span", "unit", unit));
+      var c = el("div", "cap", caption); c.setAttribute("aria-hidden", "true");
+      d.appendChild(b); d.appendChild(c); return d;
+    }
+    stats.appendChild(stat(t.stats.years, " more years", "Life expectancy at age " + t.stats.startAge));
+    stats.appendChild(stat(t.stats.endAge, "", "Age reached on average"));
+    box.appendChild(stats);
     box.appendChild(el("p", "headline", t.headline));
     box.appendChild(el("p", null, t.intro));
-    var ul = el("ul");
-    t.bullets.forEach(function (b) { ul.appendChild(el("li", null, b)); });
-    box.appendChild(ul);
+    // three cards for the 1 in 5 / half / 1 in 5 figures
+    var cards = el("div", "cards");
+    t.cards.forEach(function (c) {
+      var d = el("div", "card"), v = el("div", "cardval", c.value);
+      v.setAttribute("aria-hidden", "true");
+      d.appendChild(v); d.appendChild(el("div", "cardtxt", c.text)); cards.appendChild(d);
+    });
+    box.appendChild(cards);
     if (t.caveat) box.appendChild(el("p", "caveat", t.caveat));
     box.appendChild(el("p", "closing", t.note));
   }
@@ -317,7 +334,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261004c").then(function (r) {
+  fetch("data.json?v=20261004d").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
