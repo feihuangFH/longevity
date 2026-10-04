@@ -17,14 +17,14 @@ a { color: #337ab7; }
 
 /* intro band */
 .intro { background: var(--navy); color: #fff; }
-.intro-inner { max-width: 1170px; margin: 0 auto; padding: 26px 15px 24px; }
-.intro h1 { font-size: 36px; line-height: 1.15; margin: 0 0 8px; font-weight: bold; }
-.intro p { margin: 0 0 6px; font-size: 20px; color: #e3edf7; }
-.intro .intro-how { font-size: 17px; color: #bcd2e8; margin: 8px 0 0; }
+.intro-inner { max-width: 1170px; margin: 0 auto; padding: 14px 15px 14px; }
+.intro h1 { font-size: 30px; line-height: 1.15; margin: 0 0 4px; font-weight: bold; }
+.intro p { margin: 0; font-size: 18px; color: #e3edf7; }
+.intro .intro-how { font-size: 16px; color: #bcd2e8; margin: 6px 0 0; }
 .linkbtn { background: none; border: 0; padding: 0; margin-left: 6px; font: inherit; color: #fff; text-decoration: underline; cursor: pointer; }
 .linkbtn:focus-visible { outline: 3px solid #7fb2e5; outline-offset: 2px; }
 .narrow-only { display: none; }
-@media (max-width: 899px) { .wide-only { display: none; } .narrow-only { display: inline; } .intro h1 { font-size: 28px; } .intro p { font-size: 18px; } }
+@media (max-width: 899px) { .wide-only { display: none; } .narrow-only { display: inline; } .intro h1 { display: none; } .intro p { font-size: 17px; } .intro-inner { padding: 12px 15px 12px; } }
 .examplenote { font-size: 16px; color: var(--grey); margin: 0 0 8px; }
 
 .container { max-width: 1170px; margin: 0 auto; padding: 20px 15px 0; }
