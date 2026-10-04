@@ -15,6 +15,18 @@ a { color: #337ab7; }
 .tabs a.active { background: #f0f0f0; border-bottom-color: var(--navy); }
 .tabs a:focus-visible, .btn:focus-visible, .infobtn:focus-visible, .info:focus-visible { outline: 3px solid #7fb2e5; outline-offset: 2px; }
 
+/* intro band */
+.intro { background: var(--navy); color: #fff; }
+.intro-inner { max-width: 1170px; margin: 0 auto; padding: 26px 15px 24px; }
+.intro h1 { font-size: 36px; line-height: 1.15; margin: 0 0 8px; font-weight: bold; }
+.intro p { margin: 0 0 6px; font-size: 20px; color: #e3edf7; }
+.intro .intro-how { font-size: 17px; color: #bcd2e8; margin: 8px 0 0; }
+.linkbtn { background: none; border: 0; padding: 0; margin-left: 6px; font: inherit; color: #fff; text-decoration: underline; cursor: pointer; }
+.linkbtn:focus-visible { outline: 3px solid #7fb2e5; outline-offset: 2px; }
+.narrow-only { display: none; }
+@media (max-width: 899px) { .wide-only { display: none; } .narrow-only { display: inline; } .intro h1 { font-size: 28px; } .intro p { font-size: 18px; } }
+.examplenote { font-size: 16px; color: var(--grey); margin: 0 0 8px; }
+
 .container { max-width: 1170px; margin: 0 auto; padding: 20px 15px 0; }
 h3, h4 { font-size: 26px; font-weight: bold; margin: 20px 0 10px; line-height: 1.1; }
 h3:first-child, h4:first-child { margin-top: 0; }

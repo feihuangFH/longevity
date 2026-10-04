@@ -4,7 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Australian Longevity Calculator</title>
-  <meta name="description" content="Explore life expectancy at ages 60 to 90 for Australians with different socio-economic characteristics.">
+  <meta name="description" content="See how long Australians with similar characteristics are expected to live, from age 60 to 90.">
+  <meta name="theme-color" content="#003366">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Australian Longevity Calculator">
+  <meta property="og:title" content="Australian Longevity Calculator">
+  <meta property="og:description" content="See how long Australians with similar characteristics are expected to live, from age 60 to 90.">
+  <meta property="og:url" content="https://auslongevity.org/">
+  <meta property="og:image" content="https://auslongevity.org/preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Australian Longevity Calculator">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Australian Longevity Calculator">
+  <meta name="twitter:description" content="See how long Australians with similar characteristics are expected to live, from age 60 to 90.">
+  <meta name="twitter:image" content="https://auslongevity.org/preview.png">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BZZL2WJJV6"></script>
   <script>
@@ -13,7 +28,7 @@
     gtag('js', new Date());
     gtag('config', 'G-BZZL2WJJV6');
   </script>
-  <link rel="stylesheet" href="style.css?v=20261004a">
+  <link rel="stylesheet" href="style.css?v=20261004b">
 </head>
 <body>
 <header class="navbar">
@@ -27,6 +42,18 @@
     </nav>
   </div>
 </header>
+
+<section class="intro" id="intro">
+  <div class="intro-inner">
+    <h1>Australian Longevity Calculator</h1>
+    <p>See how long Australians with similar characteristics are expected to live, from age 60 to 90.</p>
+    <p class="intro-how">
+      <span class="wide-only">Choose the details on the left and the result updates as you go.</span>
+      <span class="narrow-only">Choose the details below and the result appears under the form.
+        <button type="button" class="linkbtn" id="skipToResult">Go to the result</button></span>
+    </p>
+  </div>
+</section>
 
 <main class="container">
   <noscript><p class="well">This calculator needs JavaScript. Please turn it on in your browser settings.</p></noscript>
@@ -109,7 +136,8 @@
       </form>
 
       <div class="results">
-        <h4>Life Expectancy Summary</h4>
+        <h4 id="summaryHeading">Life Expectancy Summary</h4>
+        <p class="examplenote" id="exampleNote" hidden>Showing an example profile. Change the details to see yours.</p>
         <div class="well" id="summary" aria-live="polite">Loading&hellip;</div>
 
         <button type="button" class="btn btn-navy" id="impactBtn">
@@ -175,7 +203,7 @@
   General information only. This is not financial, medical or other professional advice. See the <a href="#about">Disclaimer on the About page</a>.
 </footer>
 
-<script src="core.js?v=20261004a"></script>
-<script src="app.js?v=20261004a"></script>
+<script src="core.js?v=20261004b"></script>
+<script src="app.js?v=20261004b"></script>
 </body>
 </html>

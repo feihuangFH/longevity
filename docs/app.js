@@ -34,6 +34,8 @@
       a.classList.toggle("active", on);
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
+    var intro = $("intro");
+    if (intro) intro.hidden = name !== "calculator";
     window.scrollTo(0, 0);
     if (name !== lastTab) {
       if (lastTab !== null || name !== "calculator") track("view_tab", { tab_name: name });
@@ -83,6 +85,9 @@
     if (!data) return;
     var inp = readInputs();
     $("ageValue").textContent = inp.start;
+    // the page opens on an example profile, so say so until the details are changed
+    $("exampleNote").hidden = !(inp.gender === "Male" && inp.geo === "postcode" && inp.postcode.trim() === "2000" &&
+      inp.income === "<499" && inp.marital === "Single" && inp.home === "No" && inp.basis === "cohort" && inp.start === 60);
     $("postcodeBox").hidden = inp.geo !== "postcode";
     $("decileBox").hidden = inp.geo !== "irsad";
 
@@ -302,6 +307,9 @@
       });
     });
     $("impactBtn").addEventListener("click", function () { location.hash = "#feedback"; });
+    $("skipToResult").addEventListener("click", function () {
+      $("summaryHeading").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     var timer;
     window.addEventListener("resize", function () { clearTimeout(timer); timer = setTimeout(drawChart, 120); });
     showTab();
@@ -309,7 +317,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261004a").then(function (r) {
+  fetch("data.json?v=20261004b").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
