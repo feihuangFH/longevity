@@ -26,7 +26,8 @@
     if (name === "explorer") name = "calculator";   // address used before the tool was renamed
     if (TABS.indexOf(name) < 0) name = "calculator";
     TABS.forEach(function (t) {
-      $("tab-" + t).hidden = t !== name;
+      var section = $("tab-" + t);
+      if (section) section.hidden = t !== name;
     });
     Array.prototype.forEach.call(document.querySelectorAll(".tabs a"), function (a) {
       var on = a.getAttribute("data-tab") === name;
@@ -308,7 +309,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json").then(function (r) {
+  fetch("data.json?v=20261004a").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
