@@ -1,28 +1,181 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Australian Longevity Explorer</title>
-    <script
-      src="./shinylive/load-shinylive-sw.js"
-      type="module"
-    ></script>
-    <script type="module">
-      import { runExportedApp } from "./shinylive/shinylive.js";
-      runExportedApp({
-        id: "root",
-        appEngine: "r",
-        relPath: "",
-      });
-    </script>
-    <link rel="stylesheet" href="./shinylive/style-resets.css" />
-    <link rel="stylesheet" href="./shinylive/shinylive.css" />
-    
-  </head>
-  <body>
-    
-    <div style="height: 100vh; width: 100vw" id="root"></div>
-    
-  </body>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Australian Longevity Explorer</title>
+  <meta name="description" content="Explore life expectancy at ages 60 to 90 for Australians with different socio-economic characteristics.">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BZZL2WJJV6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BZZL2WJJV6');
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="navbar">
+  <div class="navbar-inner">
+    <div class="brand">Australian Longevity Explorer</div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#explorer" data-tab="explorer">Explorer</a>
+      <a href="#about" data-tab="about">About</a>
+      <a href="#download" data-tab="download">Download Data</a>
+      <a href="#feedback" data-tab="feedback">Feedback</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <noscript><p class="well">This explorer needs JavaScript. Please turn it on in your browser settings.</p></noscript>
+
+  <!-- Explorer -->
+  <section id="tab-explorer" class="tab" hidden>
+    <div class="layout">
+      <form class="well sidebar" onsubmit="return false" autocomplete="off">
+        <div class="field">
+          <label for="gender">Sex
+            <a class="info" href="https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/by%20Subject/2008.0~2016~Main%20Features~Sex~141" target="_blank" rel="noopener" title="ABS definition of sex">&#9432;</a></label>
+          <select id="gender"><option>Male</option><option>Female</option></select>
+        </div>
+
+        <fieldset class="field">
+          <legend>Area socio-economic measure (IRSAD) from:</legend>
+          <label class="radio inline"><input type="radio" name="geo_mode" value="postcode" checked> Postcode</label>
+          <label class="radio inline"><input type="radio" name="geo_mode" value="irsad"> IRSAD Decile</label>
+        </fieldset>
+
+        <div id="postcodeBox" class="field">
+          <label for="postcode">Postcode
+            <a class="info" href="https://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/2033.0.55.0012016?OpenDocument" target="_blank" rel="noopener" title="ABS SEIFA 2016 Table 1 maps Postal Area code to IRSAD decile.">&#9432;</a></label>
+          <input type="text" id="postcode" value="2000" inputmode="numeric" maxlength="12">
+          <div id="postcodeNote" class="note" aria-live="polite"></div>
+        </div>
+
+        <div id="decileBox" class="field" hidden>
+          <label for="irsad">IRSAD Decile
+            <a class="info" href="https://www.abs.gov.au/ausstats/abs@.nsf/Lookup/by%20Subject/2033.0.55.001~2016~Main%20Features~IRSAD~20" target="_blank" rel="noopener" title="ABS explanation of IRSAD (SEIFA 2016)">&#9432;</a></label>
+          <select id="irsad"></select>
+          <p class="note">IRSAD deciles are from SEIFA 2016, based on the 2016 Census.</p>
+        </div>
+
+        <div class="field">
+          <label for="income">Total Personal Weekly Income
+            <a class="info" href="https://www.abs.gov.au/census/guide-census-data/census-dictionary/2021/variables-topic/income-and-work/total-personal-income-weekly-incp" target="_blank" rel="noopener" title="ABS definition of total personal weekly income">&#9432;</a></label>
+          <select id="income">
+            <option value="<499">&lt;499</option><option>500-999</option><option>1000+</option><option>missing</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="marital">Marital Status
+            <a class="info" href="https://www.abs.gov.au/census/guide-census-data/census-dictionary/2021/variables-topic/household-and-families/registered-marital-status-mstp" target="_blank" rel="noopener" title="ABS definition of registered marital status. Codes 1 to 4 and @ are classified as Single. Code 5 is classified as Married.">&#9432;</a></label>
+          <select id="marital"><option>Single</option><option>Married</option></select>
+        </div>
+
+        <div class="field">
+          <label for="home">Home Ownership
+            <a class="info" href="https://www.abs.gov.au/census/guide-census-data/census-dictionary/2021/variables-topic/housing/tenure-and-landlord-type-tenlld" target="_blank" rel="noopener" title="ABS Tenure definition. Select 'Yes' if coded as 1 or 2.">&#9432;</a></label>
+          <select id="home"><option>No</option><option>Yes</option><option>missing</option></select>
+        </div>
+
+        <fieldset class="field">
+          <legend>Type of Life Expectancy:</legend>
+          <div class="radio">
+            <label><input type="radio" name="le_type" value="cohort" checked> With future mortality improvements (cohort)</label>
+            <button type="button" class="infobtn" aria-expanded="false" aria-controls="cohort_info" aria-label="About the cohort basis">&#9432;</button>
+            <div id="cohort_info" class="infotext" hidden>Life expectancy calculated from 2016&ndash;2017 mortality rates, adjusted for the Australian Government Actuary's assumed future mortality improvements, based on the long-term (125-year) trend in Australian death rates.</div>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="le_type" value="period"> Using 2016&ndash;2017 mortality rates only (period)</label>
+            <button type="button" class="infobtn" aria-expanded="false" aria-controls="period_info" aria-label="About the period basis">&#9432;</button>
+            <div id="period_info" class="infotext" hidden>Life expectancy calculated from mortality rates observed during 2016&ndash;2017, assuming these rates remain unchanged in future.</div>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="startAge">Life Expectancy at Age: <strong id="ageValue">60</strong></label>
+          <div class="slider">
+            <button type="button" class="step" id="ageDown" aria-label="One year younger">&minus;</button>
+            <div class="sliderbox">
+              <input type="range" id="startAge" min="60" max="90" step="1" value="60">
+              <div class="ticks" id="ageTicks" aria-hidden="true"></div>
+            </div>
+            <button type="button" class="step" id="ageUp" aria-label="One year older">+</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="results">
+        <h4>Life Expectancy Summary</h4>
+        <div class="well" id="summary" aria-live="polite">Loading&hellip;</div>
+
+        <button type="button" class="btn btn-navy" id="impactBtn">
+          <span aria-hidden="true">&#128172;</span> How did this explorer help you?
+        </button>
+
+        <h4>Mortality Curve</h4>
+        <div class="well chartwell">
+          <div id="chart"></div>
+          <div id="legend" class="legend" hidden></div>
+          <div id="tip" class="tip" hidden></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="tab-about" class="tab narrow" hidden>
+    <h3>About This Tool</h3>
+    <p>This app helps Australians understand projected life expectancy based on socio-economic and demographic factors.</p>
+    <p>It uses data from the Person Level Integrated Data Asset (PLIDA), accessed via the Australian Bureau of Statistics' DataLab. The life expectancies are computed based on the 2016-2017 census population with improvement factors of ALT2015-17 (125 year).</p>
+
+    <h4>Related Publications</h4>
+    <ul>
+      <li>Fei Huang, Francis Hui and Andr&eacute;s Villegas (2025). <a href="https://ssrn.com/abstract=5253598" target="_blank" rel="noopener">Towards Fairer Retirement Outcomes: Socio-Economic Mortality Differentials in Australia</a>. SSRN Working Paper.</li>
+      <li>Fei Huang, Francis Hui and Andr&eacute;s Villegas (2025). <a href="https://doi.org/10.7910/DVN/C0HRDE" target="_blank" rel="noopener">Australian Socio-economic Retiree Mortality 2016-17</a>. Harvard Dataverse. https://doi.org/10.7910/DVN/C0HRDE.</li>
+      <li>Pramo Samarasinghe, Fei Huang, Francis Hui and Andr&eacute;s Villegas (2026). <a href="https://content.actuaries.asn.au/resources/resource-ce6yyqn64sx3-786882053-16716" target="_blank" rel="noopener">Towards Fairer Retirement Outcomes: Health-Related Mortality Modelling</a>. Actuaries Institute.</li>
+    </ul>
+
+    <h4>Authors</h4>
+    <p>Fei Huang, Francis Hui, Pramo Samarasinghe, and Andr&eacute;s Villegas</p>
+    <p>Fei and Andr&eacute;s are Associate Professors at the School of Risk and Actuarial Studies, UNSW Sydney. Francis is an Associate Professor at the Research School of Finance, Actuarial Studies, and Statistics, Australian National University. Pramo was an Honours student at the Australian National University and is now a research assistant at UNSW Sydney.</p>
+
+    <h4>Acknowledgement</h4>
+    <p>We thank the Australian Government Actuary Guy Thorburn and his team for their invaluable support in this project.</p>
+
+    <h4>Disclaimer</h4>
+    <p>This tool provides general statistical information about life expectancy for groups of people with the characteristics you select. It is not a prediction for any individual and does not take account of personal circumstances such as health or lifestyle. It is not financial, retirement, insurance, medical or legal advice and should not be the only basis for any decision. Estimates are based on 2016&ndash;2017 data and modelling assumptions, and carry statistical uncertainty. Before making decisions that depend on this information, consider speaking to a suitably qualified professional.</p>
+
+    <h4>Project Lead Contact</h4>
+    <p>Fei Huang (<a href="mailto:feihuang@unsw.edu.au">feihuang@unsw.edu.au</a> | <a href="https://www.feihuang.org" target="_blank" rel="noopener">www.feihuang.org</a>)</p>
+  </section>
+
+  <!-- Download -->
+  <section id="tab-download" class="tab narrow" hidden>
+    <h3>Download Data</h3>
+    <p>You can download the modelled period-based probability of death (qx) for ages 60&ndash;100, covering all socioeconomic profiles below from the Harvard Dataverse, in the Australian Socio-economic Mortality Dataverse.</p>
+    <p><a class="btn btn-blue" href="https://doi.org/10.7910/DVN/C0HRDE" target="_blank" rel="noopener"><span aria-hidden="true">&#11015;</span> Download Dataset</a></p>
+  </section>
+
+  <!-- Feedback -->
+  <section id="tab-feedback" class="tab narrow" hidden>
+    <h3>How Did This Help You?</h3>
+    <p>We&rsquo;re interested in understanding how this tool supports real-world decisions, insights, or research. Whether you're a retiree, policymaker, educator, student, advisor, or researcher, your experience helps us improve this tool and demonstrate its impact.</p>
+    <p>If this tool helped you explore a scenario, inform a conversation, support a policy submission, or improve your understanding of retirement outcomes, we&rsquo;d love to hear your story.</p>
+    <p><strong>You can share as much or as little detail as you like.</strong> The form is optional and anonymous unless you choose to include your name or email. With your consent, we may include anonymised stories in research reporting or impact assessments.</p>
+    <p><a class="btn btn-navy btn-lg" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=pM_2PxXn20i44Qhnufn7o2eKlYdc2aVLl1e_QJNzupJUNzZNQVVKNjNPRVZGVlc3NEQ4M1IyWVhMWS4u" target="_blank" rel="noopener"><span aria-hidden="true">&#128172;</span> Open the feedback form</a></p>
+    <p class="small">The form opens in a new tab. You can also contact us directly at <a href="mailto:feihuang@unsw.edu.au">feihuang@unsw.edu.au</a>.</p>
+  </section>
+</main>
+
+<footer class="sitefooter">
+  General information only. This is not financial, medical or other professional advice. See the <a href="#about">Disclaimer on the About page</a>.
+</footer>
+
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
 </html>
