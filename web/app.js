@@ -240,6 +240,26 @@
     }
     sel.value = "D5";
 
+    // age slider: a tick for every year, a label every five years, and one-year step buttons
+    var ticks = $("ageTicks"), rng = $("startAge");
+    var lo = +rng.min, hi = +rng.max, thumb = 26;
+    for (var a = lo; a <= hi; a++) {
+      var pos = "calc(" + (thumb / 2) + "px + (100% - " + thumb + "px) * " + ((a - lo) / (hi - lo)) + ")";
+      var t = document.createElement("i");
+      t.style.left = pos;
+      if (a % 5 === 0) {
+        t.className = "major";
+        var lab = document.createElement("b"); lab.textContent = a; lab.style.left = pos; ticks.appendChild(lab);
+      }
+      ticks.appendChild(t);
+    }
+    function paintSlider() { rng.parentNode.style.setProperty("--pct", "calc(" + (thumb / 2) + "px + (100% - " + thumb + "px) * " + ((rng.value - lo) / (hi - lo)) + ")"); }
+    rng.addEventListener("input", paintSlider);
+    function stepAge(d) { var v = Math.max(lo, Math.min(hi, +rng.value + d)); if (v !== +rng.value) { rng.value = v; paintSlider(); update(); } }
+    $("ageDown").addEventListener("click", function () { stepAge(-1); });
+    $("ageUp").addEventListener("click", function () { stepAge(1); });
+    paintSlider();
+
     ["gender", "irsad", "income", "marital", "home", "startAge", "postcode"].forEach(function (id) {
       $(id).addEventListener("input", update);
     });

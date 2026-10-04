@@ -97,8 +97,14 @@
 
         <div class="field">
           <label for="startAge">Life Expectancy at Age: <strong id="ageValue">60</strong></label>
-          <input type="range" id="startAge" min="60" max="90" step="1" value="60">
-          <div class="range-ends"><span>60</span><span>90</span></div>
+          <div class="slider">
+            <button type="button" class="step" id="ageDown" aria-label="One year younger">&minus;</button>
+            <div class="sliderbox">
+              <input type="range" id="startAge" min="60" max="90" step="1" value="60">
+              <div class="ticks" id="ageTicks" aria-hidden="true"></div>
+            </div>
+            <button type="button" class="step" id="ageUp" aria-label="One year older">+</button>
+          </div>
         </div>
       </form>
 

@@ -46,8 +46,24 @@ input[type="radio"] { margin: 0 4px 0 0; width: 18px; height: 18px; vertical-ali
 .note .bad { color: #9a3412; }
 
 /* slider */
-input[type="range"] { width: 100%; accent-color: var(--navy); margin: 6px 0 0; }
-.range-ends { display: flex; justify-content: space-between; font-size: 14px; color: var(--grey); }
+.slider { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }
+.sliderbox { flex: 1; min-width: 0; --pct: 0%; }
+.step { flex: none; width: 36px; height: 36px; margin-top: -2px; border: 1px solid #b8c4d2; border-radius: 50%; background: #fff; color: var(--navy); font-size: 22px; line-height: 1; font-family: inherit; cursor: pointer; padding: 0; }
+.step:hover { background: #e6f2ff; }
+.step:focus-visible { outline: 3px solid #7fb2e5; outline-offset: 2px; }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 32px; margin: 0; background: transparent; cursor: pointer; }
+input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: linear-gradient(to right, var(--navy) var(--pct), #cfd8e3 var(--pct)); }
+input[type="range"]::-moz-range-track { height: 8px; border-radius: 4px; background: #cfd8e3; }
+input[type="range"]::-moz-range-progress { height: 8px; border-radius: 4px; background: var(--navy); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -9px; border-radius: 50%; background: var(--navy); border: 3px solid #fff; box-shadow: 0 0 0 1px var(--navy), 0 1px 4px rgba(0,0,0,.35); }
+input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--navy); border: 3px solid #fff; box-shadow: 0 0 0 1px var(--navy), 0 1px 4px rgba(0,0,0,.35); }
+input[type="range"]:focus-visible { outline: none; }
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--navy), 0 0 0 5px #7fb2e5; }
+input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1px var(--navy), 0 0 0 5px #7fb2e5; }
+.ticks { position: relative; height: 34px; margin-top: -2px; }
+.ticks i { position: absolute; top: 0; width: 1px; height: 6px; margin-left: -0.5px; background: #8a97a6; }
+.ticks i.major { height: 11px; background: #44546a; }
+.ticks b { position: absolute; top: 13px; transform: translateX(-50%); font-size: 13px; font-weight: normal; color: var(--grey); }
 
 /* summary */
 #summary p { margin: 0 0 10px; }
