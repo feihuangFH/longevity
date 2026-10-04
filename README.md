@@ -28,6 +28,18 @@ This needs R with the `shinylive` package. The script exports the site, sets the
 and page title, and removes shinylive files this app never uses. Then commit and push the
 updated `docs/` folder.
 
+## Static JavaScript version (preview)
+
+`web/` holds a version of the explorer written in plain JavaScript, with no R engine to download,
+so it loads in about a second. `build-site.sh` publishes it at `/beta/`.
+
+- `web/core.js` holds the calculations (the same steps as `app/app.R`), `web/app.js` the interface,
+  and `web/data.json` the data (built by `Rscript data-raw/build_web_data.R`).
+- `tests/` checks the JavaScript against the R app. `make_reference.R` writes reference results from
+  the R functions, then `node tests/check.mjs <reference.json>` compares them (all 29,760 combinations
+  of profile, age and basis, the axis ticks and the postcode handling). `tests/check_text.mjs`
+  compares the summary wording with the text the R app renders.
+
 ## Notes
 
 - Uses only `shiny` and `dplyr` at run time, with base R graphics and string functions (no
