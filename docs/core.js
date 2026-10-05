@@ -89,8 +89,8 @@
       ],
       headline: "At age " + startAge + ", life expectancy is about " + one(r.ex) +
         " more years, reaching age " + one(startAge + r.ex) + " on average.",
-      intro: "Life expectancy is an average, and ages at death vary widely. The figures below describe " +
-        "every 100 people with these characteristics who are alive at age " + startAge + ".",
+      intro: "The figures below show how ages at death are spread among people with these characteristics " +
+        "who are alive at age " + startAge + ".",
       bullets: [dieLine("1 in 5", r.q20), dieLine("half", r.q50), liveLine("1 in 5", r.q80)],
       caveat: (r.q50 >= 100 || r.q80 >= 100)
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling " +

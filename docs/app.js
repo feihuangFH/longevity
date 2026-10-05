@@ -65,8 +65,7 @@
   }
 
   var AREA_NOTE = "IRSAD is an area-level measure of relative advantage and disadvantage. " +
-    "A postcode covers many neighbourhoods, so this decile is a general guide for the whole postal area. " +
-    "If you know the IRSAD decile for your own local area, the IRSAD Decile option is more accurate.";
+    "A postcode covers many neighbourhoods, so this decile is a general guide for the whole postal area.";
   var BAD_NOTE = {
     notfound: "Postcode not found in ABS SEIFA 2016 Table 1. Check the postcode, try a nearby one, or use the IRSAD Decile option if you know your decile.",
     excluded: "The ABS did not publish an IRSAD for this postcode, usually because few people live there or too few census " +
@@ -355,7 +354,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261005c").then(function (r) {
+  fetch("data.json?v=20261005d").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
