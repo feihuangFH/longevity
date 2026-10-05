@@ -18,8 +18,8 @@
     alt: "ALT 2015–17"
   };
   var MESSAGES = {
-    notfound: "Postcode not found. Check the postcode or select the IRSAD decile option instead.",
-    excluded: "No IRSAD is published for this postcode. Please choose an IRSAD decile instead."
+    notfound: "Postcode not found. Check the postcode, try a nearby one, or choose an IRSAD decile if you know it.",
+    excluded: "No IRSAD is published for this postcode. Try a nearby postcode, or choose an IRSAD decile if you know it."
   };
 
   // ---------- tabs ----------
@@ -68,9 +68,9 @@
     "A postcode covers many neighbourhoods, so this decile is a general guide for the whole postal area. " +
     "If you know the IRSAD decile for your own local area, the IRSAD Decile option is more accurate.";
   var BAD_NOTE = {
-    notfound: "Postcode not found in ABS SEIFA 2016 Table 1. Check the postcode or use the IRSAD Decile option instead.",
+    notfound: "Postcode not found in ABS SEIFA 2016 Table 1. Check the postcode, try a nearby one, or use the IRSAD Decile option if you know your decile.",
     excluded: "The ABS did not publish an IRSAD for this postcode, usually because few people live there or too few census " +
-      "responses were available. Please use the IRSAD Decile option instead."
+      "responses were available. Please try a nearby postcode, or use the IRSAD Decile option if you know your decile."
   };
 
   // problem is null when the postcode was found, otherwise "notfound" or "excluded"
@@ -89,6 +89,7 @@
     box.appendChild(p1);
     box.appendChild(document.createElement("br"));
     if (decile) box.appendChild(document.createTextNode(AREA_NOTE));
+    if (decile) return;   // the switch is only offered when the postcode gave no result
     var b = document.createElement("button");
     b.type = "button"; b.className = "notebtn"; b.textContent = "Use the IRSAD Decile option";
     b.addEventListener("click", function () {
@@ -354,7 +355,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261005a").then(function (r) {
+  fetch("data.json?v=20261005b").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
