@@ -11,7 +11,7 @@
   }
   var lastTab = null;
 
-  var COLORS = { cohort: "#003366", period: "#CC0033", alt: "#000000", altc: "#000000" };
+  var COLORS = { cohort: "#CC0033", period: "#CC0033", alt: "#000000", altc: "#000000" };   // red is the modelled rate, black is ALT
   var NAMES = {
     cohort: "Modelled Probability of Death (cohort)",
     period: "Modelled Probability of Death (period)",
@@ -363,7 +363,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261005f").then(function (r) {
+  fetch("data.json?v=20261005g").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
