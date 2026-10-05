@@ -54,8 +54,10 @@ input[type="radio"] { margin: 0 4px 0 0; width: 18px; height: 18px; vertical-ali
 .info, .infobtn { text-decoration: none; font-size: 16px; font-weight: normal; }
 .infobtn { background: none; border: 0; padding: 0 2px; margin-left: 4px; cursor: pointer; color: inherit; font-family: inherit; }
 .infotext { font-size: 14px; color: var(--grey); margin: 4px 0 4px 20px; line-height: 1.4; }
-.note { font-size: 14px; color: var(--grey); margin: 6px 0 0; line-height: 1.4; }
+.note { font-size: 15px; color: var(--grey); margin: 6px 0 0; line-height: 1.4; }
 .note .bad { color: #9a3412; }
+.notebtn { background: none; border: 0; padding: 0; margin-top: 4px; font: inherit; font-size: 15px; color: #337ab7; text-decoration: underline; cursor: pointer; }
+.notebtn:focus-visible { outline: 3px solid #7fb2e5; outline-offset: 2px; }
 
 /* slider */
 .slider { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }

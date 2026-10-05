@@ -17,7 +17,10 @@
     period: "Modelled Probability of Death (period)",
     alt: "ALT 2015–17"
   };
-  var NOT_FOUND = "Postcode not found. Check the postcode or select the IRSAD decile option instead.";
+  var MESSAGES = {
+    notfound: "Postcode not found. Check the postcode or select the IRSAD decile option instead.",
+    excluded: "No IRSAD is published for this postcode. Please choose an IRSAD decile instead."
+  };
 
   // ---------- tabs ----------
   var TABS = ["calculator", "about", "download", "feedback"];
@@ -61,9 +64,17 @@
     };
   }
 
-  var AREA_NOTE = "IRSAD is an area-level measure of relative advantage and disadvantage for the ABS postal area.";
+  var AREA_NOTE = "IRSAD is an area-level measure of relative advantage and disadvantage. " +
+    "A postcode covers many neighbourhoods, so this decile is a general guide for the whole postal area. " +
+    "If you know the IRSAD decile for your own local area, the IRSAD Decile option is more accurate.";
+  var BAD_NOTE = {
+    notfound: "Postcode not found in ABS SEIFA 2016 Table 1. Check the postcode or use the IRSAD Decile option instead.",
+    excluded: "The ABS did not publish an IRSAD for this postcode, usually because few people live there or too few census " +
+      "responses were available. Please use the IRSAD Decile option instead."
+  };
 
-  function setNote(decile) {
+  // problem is null when the postcode was found, otherwise "notfound" or "excluded"
+  function setNote(decile, problem) {
     var box = $("postcodeNote");
     box.textContent = "";
     var p1 = document.createElement("span");
@@ -73,11 +84,19 @@
       p1.appendChild(document.createTextNode("."));
     } else {
       p1.className = "bad";
-      p1.textContent = "Postcode not found in ABS SEIFA 2016 Table 1. Check the postcode or select the IRSAD decile option instead.";
+      p1.textContent = BAD_NOTE[problem];
     }
     box.appendChild(p1);
     box.appendChild(document.createElement("br"));
-    box.appendChild(document.createTextNode(AREA_NOTE));
+    if (decile) box.appendChild(document.createTextNode(AREA_NOTE));
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "notebtn"; b.textContent = "Use the IRSAD Decile option";
+    b.addEventListener("click", function () {
+      var r = document.querySelector('input[name="geo_mode"][value="irsad"]');
+      r.checked = true; r.dispatchEvent(new Event("change", { bubbles: true }));
+      $("irsad").focus();
+    });
+    var wrap = document.createElement("div"); wrap.appendChild(b); box.appendChild(wrap);
   }
 
   // ---------- main update ----------
@@ -92,14 +111,15 @@
     $("decileBox").hidden = inp.geo !== "irsad";
 
     var decile = inp.geo === "irsad" ? inp.irsad : LE.lookupPostcode(inp.postcode, data.postcodes);
-    if (inp.geo === "postcode") setNote(decile);
+    var problem = decile ? null : LE.postcodeProblem(inp.postcode, data.excluded);
+    if (inp.geo === "postcode") setNote(decile, problem);
 
     if (!decile) {
       var msg = document.createElement("p");
-      msg.className = "empty"; msg.textContent = NOT_FOUND;
+      msg.className = "empty"; msg.textContent = MESSAGES[problem];
       $("summary").textContent = ""; $("summary").appendChild(msg);
       lastSeries = null;
-      $("chart").textContent = NOT_FOUND; $("legend").hidden = true; $("tip").hidden = true;
+      $("chart").textContent = MESSAGES[problem]; $("legend").hidden = true; $("tip").hidden = true;
       return;
     }
 
@@ -334,7 +354,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261004e").then(function (r) {
+  fetch("data.json?v=20261005a").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {

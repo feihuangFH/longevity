@@ -114,6 +114,18 @@
     return d == null ? null : "D" + d;
   }
 
+  // Why a postcode gave no decile: "excluded" when the ABS published no score for the postal area
+  // (SEIFA 2016 Table 6), otherwise "notfound" (not a postal area in the table, or not a postcode).
+  function postcodeProblem(input, excluded) {
+    var m = /\d+/.exec(input == null ? "" : String(input));
+    if (!m) return "notfound";
+    var n = parseInt(m[0], 10);
+    if (!isFinite(n) || n > 2147483647) return "notfound";
+    var pc = String(n);
+    while (pc.length < 4) pc = "0" + pc;
+    return (excluded || []).indexOf(pc) >= 0 ? "excluded" : "notfound";
+  }
+
   // Port of R's R_pretty (src/appl/pretty.c). mode "pretty" gives pretty(); mode "axis"
   // gives the tick positions used by base graphics axes (GEPretty).
   function rPretty(lo, up, ndiv, mode) {
@@ -179,6 +191,6 @@
 
   return {
     AGE0: AGE0, profileKey: profileKey, cohortQx: cohortQx, lifeExpectancy: lifeExpectancy,
-    summaryText: summaryText, lookupPostcode: lookupPostcode, pretty: pretty, axisTicks: axisTicks
+    summaryText: summaryText, lookupPostcode: lookupPostcode, postcodeProblem: postcodeProblem, pretty: pretty, axisTicks: axisTicks
   };
 });
