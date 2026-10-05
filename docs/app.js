@@ -16,7 +16,7 @@
     cohort: "Modelled Probability of Death (cohort)",
     period: "Modelled Probability of Death (period)",
     alt: "ALT 2015–17",
-    altc: "ALT 2015–17 with improvements"
+    altc: "ALT 2015–17 with 125-year improvements"
   };
   var MESSAGES = {
     notfound: "Postcode not found. Check the postcode, try a nearby one, or choose an IRSAD decile if you know it.",
@@ -363,7 +363,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261005g").then(function (r) {
+  fetch("data.json?v=20261005h").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
