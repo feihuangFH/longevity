@@ -50,6 +50,12 @@
     return { ex: sum + 0.5, q20: quantile(0.2), q50: quantile(0.5), q80: quantile(0.8) };
   }
 
+  // ALT 2015-17 qx (indexed by age from 0) carried forward with the same improvement factors, for a
+  // person who is startAge in 2016. Returns an array aligned with ages AGE0, AGE0 + 1, ...
+  function altCohortQx(altQx, imp, startAge) {
+    return cohortQx(altQx.slice(AGE0), imp, startAge);
+  }
+
   function one(x) { return x.toFixed(1); }
   function round1(x) { return Math.round(x * 10) / 10; }
 
@@ -190,7 +196,7 @@
   }
 
   return {
-    AGE0: AGE0, profileKey: profileKey, cohortQx: cohortQx, lifeExpectancy: lifeExpectancy,
+    AGE0: AGE0, profileKey: profileKey, cohortQx: cohortQx, altCohortQx: altCohortQx, lifeExpectancy: lifeExpectancy,
     summaryText: summaryText, lookupPostcode: lookupPostcode, postcodeProblem: postcodeProblem, pretty: pretty, axisTicks: axisTicks
   };
 });

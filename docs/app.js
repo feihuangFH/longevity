@@ -11,11 +11,12 @@
   }
   var lastTab = null;
 
-  var COLORS = { cohort: "#003366", period: "#CC0033", alt: "#000000" };
+  var COLORS = { cohort: "#003366", period: "#CC0033", alt: "#000000", altc: "#000000" };
   var NAMES = {
     cohort: "Modelled Probability of Death (cohort)",
     period: "Modelled Probability of Death (period)",
-    alt: "ALT 2015–17"
+    alt: "ALT 2015–17",
+    altc: "ALT 2015–17 with improvements"
   };
   var MESSAGES = {
     notfound: "Postcode not found. Check the postcode, try a nearby one, or choose an IRSAD decile if you know it.",
@@ -139,6 +140,14 @@
       for (var x = 0; x < a.length; x++) if (x >= inp.start && x <= 105) alt.pts.push([x, a[x]]);
       series.unshift(alt);
       series.reverse(); // model first, then ALT on top as in the R version
+    } else {
+      // cohort basis, the ALT table carried forward with the same improvement factors
+      var ac = LE.altCohortQx(data.alt[inp.gender], data.IF[inp.gender], inp.start), altc = { id: "altc", pts: [] };
+      for (var j = 0; j < ac.length; j++) {
+        var ag = LE.AGE0 + j;
+        if (ag >= inp.start && ag <= 105) altc.pts.push([ag, ac[j]]);
+      }
+      series.push(altc);
     }
     lastSeries = series; lastStart = inp.start;
     drawChart();
@@ -354,7 +363,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261005e").then(function (r) {
+  fetch("data.json?v=20261005f").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
