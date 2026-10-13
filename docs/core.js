@@ -126,7 +126,7 @@
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
         "It treats the two lives as independent and does not allow for any link between them. " +
         "If the two lifespans are positively linked, the time until the second death would be shorter than shown. " +
-        "Each person's marital status is kept as entered for the whole calculation, although the surviving partner would then be widowed, which may also shorten that time. " +
+        "The selected characteristics are kept fixed for the whole calculation. In particular, if one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. This may also shorten that time. " +
         BASIS_NOTE[basis]
     };
   }
