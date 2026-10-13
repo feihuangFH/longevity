@@ -239,6 +239,10 @@
     });
     box.appendChild(cards);
     if (t.caveat) box.appendChild(el("p", "caveat", t.caveat));
+    if (t.limits && t.limits.length) {
+      var lb = el("div", "limits"); lb.appendChild(el("strong", null, "Limitations"));
+      var lu = el("ul"); t.limits.forEach(function (x) { lu.appendChild(el("li", null, x)); }); lb.appendChild(lu); box.appendChild(lb);
+    }
     box.appendChild(el("p", "closing", t.note));
   }
 

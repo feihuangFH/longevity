@@ -123,10 +123,11 @@
       caveat: (oldest + L.t80 >= 100)
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling assumptions and should be treated with caution."
         : null,
+      limits: [
+        "The two lives are treated as independent, with no link between them. If the two lifespans are positively linked, the time until the second death would be shorter than shown.",
+        "The selected characteristics are kept fixed for the whole calculation. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. This may also shorten the time until the second death."
+      ].concat(basis === "cohort" ? [BASE_YEAR] : []),
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
-        "It treats the two lives as independent and does not allow for any link between them. " +
-        "If the two lifespans are positively linked, the time until the second death would be shorter than shown. " +
-        "The selected characteristics are kept fixed for the whole calculation. In particular, if one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. This may also shorten that time. " +
         BASIS_NOTE[basis]
     };
   }
@@ -134,12 +135,14 @@
 
   var YRS = "2016–2017";
 
+  // Limitations shown under a bold heading. The base year only matters for the cohort basis.
+  var BASE_YEAR = "The cohort basis follows a person who was the selected age in 2016, the base year of the data. " +
+    "It allows for improvement from 2016 onwards but not for improvement between 2016 and today.";
+
   var BASIS_NOTE = {
     cohort: "These figures use the cohort basis. They are calculated from " + YRS +
       " mortality rates, adjusted for the Australian Government Actuary's assumed future mortality " +
-      "improvements, based on the long-term (125-year) trend in Australian death rates." +
-      " The cohort basis follows a person who was the selected age in 2016, the base year of the data. " +
-      "It allows for improvement from 2016 onwards but not for improvement between 2016 and today.",
+      "improvements, based on the long-term (125-year) trend in Australian death rates.",
     period: "These figures use the period basis. They are calculated from mortality rates observed during " +
       YRS + ", assuming these rates remain unchanged in future."
   };
@@ -177,6 +180,8 @@
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling " +
           "assumptions and should be treated with caution."
         : null,
+      limits: ["The selected characteristics are assumed to stay the same for the rest of life."]
+        .concat(basis === "cohort" ? [BASE_YEAR] : []),
       note: "This describes a group of people with the selected characteristics, not a prediction for " +
         "any one person. " + BASIS_NOTE[basis]
     };

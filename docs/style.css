@@ -133,6 +133,10 @@ input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1px var(
 @media (min-width: 900px) { .couple-grid { grid-template-columns: 1fr 1fr; } }
 #c_summary .stats { grid-template-columns: repeat(3, 1fr); }
 #c_summary .cardval .unit { font-size: 18px; margin-left: 4px; }
+#summary .limits, #c_summary .limits { margin: 14px 0 0; font-size: 15px; color: #444; }
+#summary .limits strong, #c_summary .limits strong { color: #222; font-size: 16px; }
+#summary .limits ul, #c_summary .limits ul { margin: 4px 0 0; padding-left: 22px; }
+#summary .limits li, #c_summary .limits li { margin: 0 0 4px; font-size: 15px; }
 #c_summary .cardages { display: block; margin-top: 4px; font-size: 15px; color: var(--grey); }
 @media (max-width: 640px) { #c_summary .stats { grid-template-columns: 1fr; } #c_summary .card { display: block; } #c_summary .cardval { min-width: 0; } #c_summary .cardtxt { margin-top: 4px; } }
 .couplelink { margin: 12px 0 4px; font-size: 18px; }
