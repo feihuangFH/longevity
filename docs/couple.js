@@ -1,4 +1,4 @@
-// Couple calculator tab. Builds its own form, and uses the calculations in core.js.
+// Couple Calculator tab. Builds its own form, and uses the calculations in core.js.
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
