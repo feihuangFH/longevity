@@ -105,8 +105,6 @@
   function coupleText(ageA, ageB, basis, r) {
     var L = r.last;
     function ages(t) { return "You would be " + ageText(ageA + t) + " and your partner " + ageText(ageB + t) + "."; }
-    // any age shown as 100 or older
-    var reach100 = [L.ex, L.t20, L.t50, L.t80].some(function (t) { return ageA + t >= 100 || ageB + t >= 100; });
     return {
       headline: "On average, the second death comes about " + one(L.ex) + " years from now, when you would be " +
         ageText(ageA + L.ex) + " and your partner " + ageText(ageB + L.ex) + ".",
@@ -122,8 +120,7 @@
         { value: one(L.t80), unit: " years", text: "About 1 in 5 couples like this still have one partner alive after " + one(L.t80) + " years.", ages: ages(L.t80) }
       ],
       limits: "The two lives are treated as independent given the selected characteristics. The characteristics are held fixed, including after the first death." +
-        (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : "") +
-        (reach100 ? " Ages shown as 100 or older rest on extrapolated mortality." : ""),
+        (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : ""),
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
         BASIS_NOTE[basis]
     };
@@ -157,8 +154,6 @@
 
   // The text of the summary box, as plain strings, plus the figures used for the large display.
   function summaryText(startAge, basis, r) {
-    // any of the three figures shown as 100 or more
-    var reach100 = [r.q20, r.q50, r.q80].some(function (a) { return round1(a) >= 100; });
     return {
       stats: { startAge: startAge, years: one(r.ex), endAge: one(startAge + r.ex) },
       cards: [
@@ -172,8 +167,7 @@
         "who are alive at age " + startAge + ".",
       bullets: [dieLine("1 in 5", r.q20), dieLine("half", r.q50), liveLine("1 in 5", r.q80)],
       limits: "The selected characteristics are held fixed for the rest of life." +
-        (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : "") +
-        (reach100 ? " Figures shown as 100+ rest on extrapolated mortality." : ""),
+        (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : ""),
       note: "This describes a group of people with the selected characteristics, not a prediction for " +
         "any one person. " + BASIS_NOTE[basis]
     };
