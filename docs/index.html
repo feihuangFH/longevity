@@ -28,7 +28,7 @@
     gtag('js', new Date());
     gtag('config', 'G-BZZL2WJJV6');
   </script>
-  <link rel="stylesheet" href="style.css?v=20261013f">
+  <link rel="stylesheet" href="style.css?v=20261013g">
 </head>
 <body>
 <header class="navbar">
@@ -125,7 +125,7 @@
           <div class="radio">
             <label><input type="radio" name="le_type" value="cohort" checked> With future mortality improvements (cohort)</label>
             <button type="button" class="infobtn" aria-expanded="false" aria-controls="cohort_info" aria-label="About the cohort basis">&#9432;</button>
-            <div id="cohort_info" class="infotext" hidden>Life expectancy calculated from 2016&ndash;2017 mortality rates, adjusted for the Australian Government Actuary's assumed future mortality improvements, based on the long-term (125-year) trend in Australian death rates. It starts at the 2016 base year of the data and treats a person of the selected age as if they were that age in 2016, so it does not include improvement between 2016 and today.</div>
+            <div id="cohort_info" class="infotext" hidden>Life expectancy calculated from 2016&ndash;2017 mortality rates, adjusted for the Australian Government Actuary's assumed future mortality improvements, based on the long-term (125-year) trend in Australian death rates. It is anchored to the 2016 base year of the data. A person of the selected age is treated as if they were that age in 2016, and the assumed future improvement is applied to the years that follow. Any change in mortality between 2016 and today is not included.</div>
           </div>
           <div class="radio">
             <label><input type="radio" name="le_type" value="period"> Using 2016&ndash;2017 mortality rates only (period)</label>
@@ -224,8 +224,8 @@
   General information only. This is not financial, medical or other professional advice. See the <a href="#about">Disclaimer on the About page</a>.
 </footer>
 
-<script src="core.js?v=20261013f"></script>
-<script src="couple.js?v=20261013f"></script>
-<script src="app.js?v=20261013f"></script>
+<script src="core.js?v=20261013g"></script>
+<script src="couple.js?v=20261013g"></script>
+<script src="app.js?v=20261013g"></script>
 </body>
 </html>

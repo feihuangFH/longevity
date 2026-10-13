@@ -136,8 +136,9 @@
   var YRS = "2016–2017";
 
   // Limitations shown under a bold heading. The base year only matters for the cohort basis.
-  var BASE_YEAR = "The cohort basis starts at the 2016 base year of the data. A person of the selected age is treated as if " +
-    "they were that age in 2016, so improvement in mortality between 2016 and today is not included.";
+  var BASE_YEAR = "The cohort basis is anchored to the 2016 base year of the data. A person of the selected age is treated as if " +
+    "they were that age in 2016, and the assumed future improvement is applied to the years that follow. " +
+    "Any change in mortality between 2016 and today is not included.";
 
   var BASIS_NOTE = {
     cohort: "These figures use the cohort basis. They are calculated from " + YRS +
