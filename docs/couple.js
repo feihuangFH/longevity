@@ -257,9 +257,9 @@
     function sy(v) { return m.t + ph - (v - uy0) / (uy1 - uy0) * ph; }
     window.__cgeom = { m: m, pw: pw, ph: ph, sx: sx, ux0: ux0, ux1: ux1, width: width, N: N };
     var fs = narrow ? 12 : 15, out = [];
-    out.push('<svg xmlns="' + SVGNS + '" viewBox="0 0 ' + width + " " + height + '" role="img" aria-label="Chart of the chance that you, your partner, at least one of you, or both of you are alive, by years from now">');
-    out.push("<title>Chance of being alive by years from now</title>");
-    out.push('<text x="' + (narrow ? width / 2 : m.l + pw / 2) + '" y="26" text-anchor="middle" font-size="' + (narrow ? 16 : 20) + '" font-weight="bold" fill="#000">Chance of being alive, by years from now</text>');
+    out.push('<svg xmlns="' + SVGNS + '" viewBox="0 0 ' + width + " " + height + '" role="img" aria-label="Chart of the chance that you, your partner, at least one of you, or both of you are alive, by years from the ages entered">');
+    out.push("<title>Chance of being alive over time</title>");
+    out.push('<text x="' + (narrow ? width / 2 : m.l + pw / 2) + '" y="26" text-anchor="middle" font-size="' + (narrow ? 16 : 20) + '" font-weight="bold" fill="#000">Chance of being alive over time</text>');
     out.push('<path d="M' + m.l + " " + m.t + "V" + (m.t + ph) + "H" + (m.l + pw) + '" fill="none" stroke="#000"/>');
     [0, 0.2, 0.4, 0.6, 0.8, 1].forEach(function (v) {
       var y = sy(v);
@@ -272,7 +272,7 @@
       out.push('<line x1="' + x + '" x2="' + x + '" y1="' + (m.t + ph) + '" y2="' + (m.t + ph + 6) + '" stroke="#000"/>');
       out.push('<text x="' + x + '" y="' + (m.t + ph + 6 + fs + 2) + '" text-anchor="middle" font-size="' + fs + '" fill="#000">' + v + "</text>");
     });
-    out.push('<text x="' + (m.l + pw / 2) + '" y="' + (height - 8) + '" text-anchor="middle" font-size="' + (fs + 1) + '" fill="#000">Years from now</text>');
+    out.push('<text x="' + (m.l + pw / 2) + '" y="' + (height - 8) + '" text-anchor="middle" font-size="' + (fs + 1) + '" fill="#000">Years from the ages entered</text>');
     series.forEach(function (s) {
       var pts = s.pts.map(function (p) { return sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1); }).join(" ");
       var dash = s.id === "both" ? ' stroke-dasharray="6 4"' : "", w = s.id === "last" ? 3.5 : 2.5;
