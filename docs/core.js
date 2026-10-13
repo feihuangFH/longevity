@@ -105,7 +105,8 @@
   function coupleText(ageA, ageB, basis, r) {
     var L = r.last;
     function ages(t) { return "You would be " + ageText(ageA + t) + " and your partner " + ageText(ageB + t) + "."; }
-    var oldest = Math.max(ageA, ageB);
+    // any age shown as 100 or older
+    var reach100 = [L.ex, L.t20, L.t50, L.t80].some(function (t) { return ageA + t >= 100 || ageB + t >= 100; });
     return {
       headline: "On average, the second death comes about " + one(L.ex) + " years from now, when you would be " +
         ageText(ageA + L.ex) + " and your partner " + ageText(ageB + L.ex) + ".",
@@ -120,12 +121,9 @@
         { value: one(L.t50), unit: " years", text: "About half of couples like this have both died within " + one(L.t50) + " years.", ages: ages(L.t50) },
         { value: one(L.t80), unit: " years", text: "About 1 in 5 couples like this still have one partner alive after " + one(L.t80) + " years.", ages: ages(L.t80) }
       ],
-      caveat: (oldest + L.t80 >= 100)
-        ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling assumptions and should be treated with caution."
-        : null,
       limits: "The two lives are treated as independent given the selected characteristics. The characteristics are held fixed, including after the first death." +
         (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : "") +
-        " The time until the second death includes years beyond age 100, which rely on extrapolated mortality.",
+        (reach100 ? " Ages shown as 100 or older rest on extrapolated mortality." : ""),
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
         BASIS_NOTE[basis]
     };
@@ -159,6 +157,8 @@
 
   // The text of the summary box, as plain strings, plus the figures used for the large display.
   function summaryText(startAge, basis, r) {
+    // any of the three figures shown as 100 or more
+    var reach100 = [r.q20, r.q50, r.q80].some(function (a) { return round1(a) >= 100; });
     return {
       stats: { startAge: startAge, years: one(r.ex), endAge: one(startAge + r.ex) },
       cards: [
@@ -171,13 +171,9 @@
       intro: "The figures below show how ages at death are spread among people with these characteristics " +
         "who are alive at age " + startAge + ".",
       bullets: [dieLine("1 in 5", r.q20), dieLine("half", r.q50), liveLine("1 in 5", r.q80)],
-      caveat: (r.q50 >= 100 || r.q80 >= 100)
-        ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling " +
-          "assumptions and should be treated with caution."
-        : null,
       limits: "The selected characteristics are held fixed for the rest of life." +
         (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : "") +
-        " Life expectancy includes years beyond age 100, which rely on extrapolated mortality.",
+        (reach100 ? " Figures shown as 100+ rest on extrapolated mortality." : ""),
       note: "This describes a group of people with the selected characteristics, not a prediction for " +
         "any one person. " + BASIS_NOTE[basis]
     };
