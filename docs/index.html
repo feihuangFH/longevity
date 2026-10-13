@@ -28,7 +28,7 @@
     gtag('js', new Date());
     gtag('config', 'G-BZZL2WJJV6');
   </script>
-  <link rel="stylesheet" href="style.css?v=20261005i">
+  <link rel="stylesheet" href="style.css?v=20261013a">
 </head>
 <body>
 <header class="navbar">
@@ -36,6 +36,7 @@
     <div class="brand">Australian Longevity Calculator</div>
     <nav class="tabs" aria-label="Sections">
       <a href="#calculator" data-tab="calculator">Calculator</a>
+      <a href="#couple" data-tab="couple">Couples</a>
       <a href="#about" data-tab="about">About</a>
       <a href="#download" data-tab="download">Download Data</a>
       <a href="#feedback" data-tab="feedback">Feedback</a>
@@ -140,6 +141,8 @@
         <p class="examplenote" id="exampleNote" hidden>Showing an example profile. Change the details to see yours.</p>
         <div class="well" id="summary" aria-live="polite">Loading&hellip;</div>
 
+        <p class="couplelink">Planning as a couple? <button type="button" class="notebtn big" id="toCouple" data-track="click_couple_link">Try the couple calculator</button></p>
+
         <button type="button" class="btn btn-navy" id="impactBtn">
           <span aria-hidden="true">&#128172;</span> How did this calculator help you?
         </button>
@@ -151,6 +154,24 @@
           <div id="tip" class="tip" hidden></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Couples -->
+  <section id="tab-couple" class="tab" hidden>
+    <h3>Couple calculator</h3>
+    <p>See how long couples with similar characteristics are expected to live. The result looks at the time until the second of two people dies. Enter details for you and your partner.
+      <span class="narrow-only"><button type="button" class="notebtn big" id="c_skip">Go to the result</button></span></p>
+    <p class="examplenote" id="c_example" hidden>Showing an example couple. Change the details to see yours.</p>
+    <div id="c_form" class="couple-grid"></div>
+    <div id="c_basis_host"></div>
+    <h4 id="c_summaryHeading">Result for the couple</h4>
+    <div class="well" id="c_summary" aria-live="polite">Loading&hellip;</div>
+    <h4>Chance of being alive</h4>
+    <div class="well chartwell">
+      <div id="c_chart"></div>
+      <div id="c_legend" class="legend" hidden></div>
+      <div id="c_tip" class="tip" hidden></div>
     </div>
   </section>
 
@@ -203,7 +224,8 @@
   General information only. This is not financial, medical or other professional advice. See the <a href="#about">Disclaimer on the About page</a>.
 </footer>
 
-<script src="core.js?v=20261005i"></script>
-<script src="app.js?v=20261005i"></script>
+<script src="core.js?v=20261013a"></script>
+<script src="couple.js?v=20261013a"></script>
+<script src="app.js?v=20261013a"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@
   };
 
   // ---------- tabs ----------
-  var TABS = ["calculator", "about", "download", "feedback"];
+  var TABS = ["calculator", "couple", "about", "download", "feedback"];
   function showTab() {
     var name = (location.hash || "#calculator").slice(1);
     if (name === "explorer") name = "calculator";   // address used before the tool was renamed
@@ -46,6 +46,7 @@
       lastTab = name;
     }
     if (name === "calculator" && data) drawChart();
+    if (name === "couple" && window.Couple) Couple.show();
   }
 
   // ---------- inputs ----------
@@ -353,6 +354,11 @@
       });
     });
     $("impactBtn").addEventListener("click", function () { location.hash = "#feedback"; });
+    $("toCouple").addEventListener("click", function () {
+      if (window.Couple) Couple.prefill(readInputs());   // carries the choices across to the "You" side
+      location.hash = "#couple";
+    });
+    if (window.Couple) Couple.init(data, {});
     $("skipToResult").addEventListener("click", function () {
       $("summaryHeading").scrollIntoView({ behavior: "smooth", block: "start" });
     });
@@ -363,7 +369,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261005i").then(function (r) {
+  fetch("data.json?v=20261013a").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {

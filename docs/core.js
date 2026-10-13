@@ -57,6 +57,77 @@
   }
 
   function one(x) { return x.toFixed(1); }
+
+  // ---------- couples ----------
+  // Probability of being alive t years from now, for a person who is startAge now (S[0] = 1).
+  // q is aligned with ages AGE0, AGE0 + 1, ... as elsewhere.
+  function survivalCurve(q, startAge) {
+    var S = [1], k = 1;
+    for (var i = startAge - AGE0; i < q.length; i++) { k = k * (1 - q[i]); S.push(k); }
+    return S;
+  }
+
+  // Expected time and the times by which 20%, 50% and 80% have died, from a survival curve in years.
+  // Same method as lifeExpectancy() so that a single life gives the same answer in either place.
+  function curveSummary(S) {
+    var sum = 0;
+    for (var t = 1; t < S.length; t++) sum += S[t];
+    function quantile(pDie) {
+      var target = 1 - pDie, idx = -1;
+      for (var j = 0; j < S.length; j++) { if (S[j] <= target) { idx = j; break; } }
+      if (idx < 0) return NaN;
+      if (idx === 0) return 0;
+      var S1 = S[idx - 1], S2 = S[idx];
+      return (idx - 1) + (S1 - target) / (S1 - S2);
+    }
+    return { ex: sum + 0.5, t20: quantile(0.2), t50: quantile(0.5), t80: quantile(0.8) };
+  }
+
+  // Two lives treated as independent. Beyond the end of a person's table they are taken as no longer alive.
+  function coupleCurves(SA, SB) {
+    var n = Math.max(SA.length, SB.length), last = [], both = [], a, b;
+    for (var t = 0; t < n; t++) {
+      a = t < SA.length ? SA[t] : 0; b = t < SB.length ? SB[t] : 0;
+      last.push(a + b - a * b);   // at least one alive
+      both.push(a * b);           // both alive
+    }
+    return { last: last, both: both };
+  }
+
+  function coupleResults(SA, SB) {
+    var c = coupleCurves(SA, SB);
+    return { a: curveSummary(SA), b: curveSummary(SB), last: curveSummary(c.last), both: curveSummary(c.both), curves: c };
+  }
+
+  function ageText(a) { return a >= 100 ? "100 or older" : one(a); }
+
+  // The text of the couple results, as plain strings plus the figures for the large display.
+  function coupleText(ageA, ageB, basis, r) {
+    var L = r.last;
+    function ages(t) { return "You would be " + ageText(ageA + t) + " and your partner " + ageText(ageB + t) + "."; }
+    var oldest = Math.max(ageA, ageB);
+    return {
+      headline: "On average, the second death comes about " + one(L.ex) + " years from now, when you would be " +
+        ageText(ageA + L.ex) + " and your partner " + ageText(ageB + L.ex) + ".",
+      intro: "The figures below show how the time until the last of you dies is spread among couples with these characteristics.",
+      stats: [
+        { big: one(r.a.ex), unit: " more years", cap: "Your life expectancy at age " + ageA },
+        { big: one(r.b.ex), unit: " more years", cap: "Your partner's life expectancy at age " + ageB },
+        { big: one(L.ex), unit: " more years", cap: "Until the second death, on average" }
+      ],
+      cards: [
+        { value: one(L.t20), unit: " years", text: "About 1 in 5 couples like this have both died within " + one(L.t20) + " years.", ages: ages(L.t20) },
+        { value: one(L.t50), unit: " years", text: "About half of couples like this have both died within " + one(L.t50) + " years.", ages: ages(L.t50) },
+        { value: one(L.t80), unit: " years", text: "About 1 in 5 couples like this still have one partner alive after " + one(L.t80) + " years.", ages: ages(L.t80) }
+      ],
+      caveat: (oldest + L.t80 >= 100)
+        ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling assumptions and should be treated with caution."
+        : null,
+      note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
+        "It treats the two lives as independent. Partners' lifespans tend to move together, so the real spread of results is somewhat narrower than shown. " +
+        BASIS_NOTE[basis]
+    };
+  }
   function round1(x) { return Math.round(x * 10) / 10; }
 
   var YRS = "2016–2017";
@@ -197,6 +268,6 @@
 
   return {
     AGE0: AGE0, profileKey: profileKey, cohortQx: cohortQx, altCohortQx: altCohortQx, lifeExpectancy: lifeExpectancy,
-    summaryText: summaryText, lookupPostcode: lookupPostcode, postcodeProblem: postcodeProblem, pretty: pretty, axisTicks: axisTicks
+    summaryText: summaryText, survivalCurve: survivalCurve, curveSummary: curveSummary, coupleCurves: coupleCurves, coupleResults: coupleResults, coupleText: coupleText, ageLabel: ageText, lookupPostcode: lookupPostcode, postcodeProblem: postcodeProblem, pretty: pretty, axisTicks: axisTicks
   };
 });
