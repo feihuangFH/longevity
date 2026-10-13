@@ -4,8 +4,6 @@ Life expectancy at ages 60 to 90 for Australians with different socio-economic c
 A static website in plain JavaScript, hosted free on GitHub Pages at https://auslongevity.org.
 It loads in about a second because there is no server and no R engine to download.
 
-The R (Shiny) version is hosted separately at https://auslongevity.shinyapps.io/explorer/.
-
 ## What is in this repository
 
 - `docs/` is the website that GitHub Pages serves.
