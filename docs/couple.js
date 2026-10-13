@@ -119,7 +119,7 @@
     var basis = $("c_basis_host"); basis.textContent = "";
     var fs = el("fieldset", "field"), lg = el("legend", null, "Type of Life Expectancy:"); fs.appendChild(lg);
     [["cohort", "With future mortality improvements (cohort)",
-      "Life expectancy calculated from 2016–2017 mortality rates, adjusted for the Australian Government Actuary's assumed future mortality improvements, based on the long-term (125-year) trend in Australian death rates."],
+      "Life expectancy calculated from 2016–2017 mortality rates, adjusted for the Australian Government Actuary's assumed future mortality improvements, based on the long-term (125-year) trend in Australian death rates. It follows a person who was the selected age in 2016, the base year of the data, and does not allow for improvement between 2016 and today."],
      ["period", "Using 2016–2017 mortality rates only (period)",
       "Life expectancy calculated from mortality rates observed during 2016–2017, assuming these rates remain unchanged in future."]]
       .forEach(function (it) {
