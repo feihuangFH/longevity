@@ -125,7 +125,7 @@
         : null,
       limits: [
         "The two lives are treated as independent given the selected characteristics. Other factors that the characteristics do not capture, such as shared health and lifestyle, may link the two lifespans. If the lifespans are positively linked, the time until the second death may be shorter than shown.",
-        "The selected characteristics are held fixed throughout the calculation. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. In the model those rates are higher than the rates for married people, so the time until the second death may be longer than shown."
+        "The selected characteristics are held fixed throughout the calculation. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. In the model, mortality rates for people who are not currently married are generally higher than those for married people, so the time until the second death may be longer than shown."
       ].concat(basis === "cohort" ? [BASE_YEAR] : []),
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
         BASIS_NOTE[basis]

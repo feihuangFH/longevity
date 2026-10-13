@@ -373,7 +373,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261013e").then(function (r) {
+  fetch("data.json?v=20261013f").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
