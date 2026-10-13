@@ -40,6 +40,8 @@
     });
     var intro = $("intro");
     if (intro) intro.hidden = name !== "calculator";
+    var introCouple = $("intro_couple");
+    if (introCouple) introCouple.hidden = name !== "couple";
     window.scrollTo(0, 0);
     if (name !== lastTab) {
       if (lastTab !== null || name !== "calculator") track("view_tab", { tab_name: name });
@@ -382,7 +384,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261013m").then(function (r) {
+  fetch("data.json?v=20261013o").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {

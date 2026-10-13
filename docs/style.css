@@ -26,6 +26,7 @@ a { color: #337ab7; }
 .narrow-only { display: none; }
 @media (max-width: 899px) { .wide-only { display: none; } .narrow-only { display: inline; } .intro h1 { display: none; } .intro p { font-size: 17px; } .intro-inner { padding: 12px 15px 12px; } }
 .examplenote { font-size: 16px; color: var(--grey); margin: 0 0 8px; }
+@media (max-width: 899px) { #intro_couple h1 { display: block; font-size: 24px; } }
 
 .container { max-width: 1170px; margin: 0 auto; padding: 20px 15px 0; }
 h3, h4 { font-size: 26px; font-weight: bold; margin: 20px 0 10px; line-height: 1.1; }
