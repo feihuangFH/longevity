@@ -124,8 +124,8 @@
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling assumptions and should be treated with caution."
         : null,
       limits: [
-        "The two lives are treated as independent, with no link between them. If the two lifespans are positively linked, the time until the second death would be shorter than shown.",
-        "The selected characteristics are kept fixed for the whole calculation. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. This may also shorten the time until the second death."
+        "The two lives are treated as independent given the selected characteristics. Other factors that the characteristics do not capture, such as shared health and lifestyle, may link the two lifespans. If the lifespans are positively linked, the time until the second death may be shorter than shown.",
+        "The selected characteristics are held fixed throughout the calculation. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. In the model those rates are higher than the rates for married people, so the time until the second death may be longer than shown."
       ].concat(basis === "cohort" ? [BASE_YEAR] : []),
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
         BASIS_NOTE[basis]
@@ -136,8 +136,8 @@
   var YRS = "2016–2017";
 
   // Limitations shown under a bold heading. The base year only matters for the cohort basis.
-  var BASE_YEAR = "The cohort basis follows a person who was the selected age in 2016, the base year of the data. " +
-    "It allows for improvement from 2016 onwards but not for improvement between 2016 and today.";
+  var BASE_YEAR = "The cohort basis starts at the 2016 base year of the data. A person of the selected age is treated as if " +
+    "they were that age in 2016, so improvement in mortality between 2016 and today is not included.";
 
   var BASIS_NOTE = {
     cohort: "These figures use the cohort basis. They are calculated from " + YRS +
@@ -180,7 +180,7 @@
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling " +
           "assumptions and should be treated with caution."
         : null,
-      limits: ["The selected characteristics are assumed to stay the same for the rest of life."]
+      limits: ["The selected characteristics are held fixed for the rest of life."]
         .concat(basis === "cohort" ? [BASE_YEAR] : []),
       note: "This describes a group of people with the selected characteristics, not a prediction for " +
         "any one person. " + BASIS_NOTE[basis]
