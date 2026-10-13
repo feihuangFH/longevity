@@ -2,7 +2,6 @@
 
 Life expectancy at ages 60 to 90 for Australians with different socio-economic characteristics.
 A static website in plain JavaScript, hosted free on GitHub Pages at https://auslongevity.org.
-It loads in about a second because there is no server and no R engine to download.
 
 ## What is in this repository
 
@@ -21,6 +20,5 @@ There is no build step. Edit the files in `docs/`, commit and push.
 
 This work is licensed under the
 [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International licence (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/).
-The full text is in the `LICENSE` file. You may share it with attribution for non-commercial purposes
-without changing it. For other uses, please contact the project lead, Fei Huang
-(feihuang@unsw.edu.au).
+The full text is in the `LICENSE` file. To ask about other uses, please contact the project lead,
+Fei Huang (feihuang@unsw.edu.au).
