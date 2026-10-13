@@ -28,7 +28,7 @@
     gtag('js', new Date());
     gtag('config', 'G-BZZL2WJJV6');
   </script>
-  <link rel="stylesheet" href="style.css?v=20261013h">
+  <link rel="stylesheet" href="style.css?v=20261013i">
 </head>
 <body>
 <header class="navbar">
@@ -195,6 +195,17 @@
     <h4>Acknowledgement</h4>
     <p>We thank the Australian Government Actuary Guy Thorburn and his team for their invaluable support in this project.</p>
 
+    <h4 id="limitations">Limitations and assumptions</h4>
+    <p>The results are estimates from a model. These points describe what the calculation does and does not allow for.</p>
+    <ul>
+      <li><strong>Independence of the two lives.</strong> The couple calculator treats the two lives as independent given the selected characteristics. Other factors that the characteristics do not capture, such as shared health and lifestyle, may link the two lifespans. If the lifespans are positively linked, the time until the second death may be shorter than shown.</li>
+      <li><strong>Characteristics held fixed.</strong> The selected characteristics are held fixed throughout the calculation, for one person or for a couple. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. In the model, mortality rates for people who are not currently married are generally higher than those for married people, so the time until the second death may be longer than shown.</li>
+      <li><strong>The 2016 base year.</strong> The cohort basis is anchored to the 2016 base year of the data. A person of the selected age is treated as if they were that age in 2016, and assumed future mortality improvements are applied to the years that follow. Any change in mortality between 2016 and today is not included.</li>
+      <li><strong>Ages beyond 100.</strong> The model is fitted to data up to age 100. Life expectancy, and the average time until the second death, include years lived beyond 100, which rely on extrapolated mortality. These usually add under half a year. The 1 in 5 and half figures that are below 100 do not depend on them. When a figure reaches 100 or more, a further caution is shown.</li>
+      <li><strong>Postcodes.</strong> A postcode result uses the IRSAD decile of the whole postal area, which is a general guide. The mortality model uses deciles of smaller local areas.</li>
+      <li><strong>Marital status.</strong> The data use registered marital status. Never married, widowed, divorced and separated people form one group, and people in a de facto relationship are in that group too.</li>
+    </ul>
+
     <h4>Disclaimer</h4>
     <p>This tool provides general statistical information about life expectancy for groups of people with the characteristics you select. It is not a prediction for any individual and does not take account of personal circumstances such as health or lifestyle. It is not financial, retirement, insurance, medical or legal advice and should not be the only basis for any decision. Estimates are based on 2016&ndash;2017 data and modelling assumptions, and carry statistical uncertainty. Before making decisions that depend on this information, consider speaking to a suitably qualified professional.</p>
 
@@ -224,8 +235,8 @@
   General information only. This is not financial, medical or other professional advice. See the <a href="#about">Disclaimer on the About page</a>.
 </footer>
 
-<script src="core.js?v=20261013h"></script>
-<script src="couple.js?v=20261013h"></script>
-<script src="app.js?v=20261013h"></script>
+<script src="core.js?v=20261013i"></script>
+<script src="couple.js?v=20261013i"></script>
+<script src="app.js?v=20261013i"></script>
 </body>
 </html>

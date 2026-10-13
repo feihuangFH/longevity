@@ -123,10 +123,9 @@
       caveat: (oldest + L.t80 >= 100)
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling assumptions and should be treated with caution."
         : null,
-      limits: [
-        "The two lives are treated as independent given the selected characteristics. Other factors that the characteristics do not capture, such as shared health and lifestyle, may link the two lifespans. If the lifespans are positively linked, the time until the second death may be shorter than shown.",
-        "The selected characteristics are held fixed throughout the calculation. If one partner dies, the survivor's mortality is not recalculated using the rates for people who are not currently married, a group that includes widowed people. In the model, mortality rates for people who are not currently married are generally higher than those for married people, so the time until the second death may be longer than shown."
-      ].concat(basis === "cohort" ? [BASE_YEAR] : []),
+      limits: "The two lives are treated as independent given the selected characteristics. The characteristics are held fixed, including after the first death." +
+        (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : "") +
+        " The time until the second death includes years beyond age 100, which rely on extrapolated mortality.",
       note: "This describes couples with the selected characteristics, not a prediction for any one couple. " +
         BASIS_NOTE[basis]
     };
@@ -134,11 +133,6 @@
   function round1(x) { return Math.round(x * 10) / 10; }
 
   var YRS = "2016–2017";
-
-  // Limitations shown under a bold heading. The base year only matters for the cohort basis.
-  var BASE_YEAR = "The cohort basis is anchored to the 2016 base year of the data. A person of the selected age is treated as if " +
-    "they were that age in 2016, and assumed future mortality improvements are applied to the years that follow. " +
-    "Any change in mortality between 2016 and today is not included.";
 
   var BASIS_NOTE = {
     cohort: "These figures use the cohort basis. They are calculated from " + YRS +
@@ -181,8 +175,9 @@
         ? "The data used extend only to age 100. Results beyond that rely more heavily on modelling " +
           "assumptions and should be treated with caution."
         : null,
-      limits: ["The selected characteristics are held fixed for the rest of life."]
-        .concat(basis === "cohort" ? [BASE_YEAR] : []),
+      limits: "The selected characteristics are held fixed for the rest of life." +
+        (basis === "cohort" ? " On the cohort basis, mortality is anchored to the 2016 base year." : "") +
+        " Life expectancy includes years beyond age 100, which rely on extrapolated mortality.",
       note: "This describes a group of people with the selected characteristics, not a prediction for " +
         "any one person. " + BASIS_NOTE[basis]
     };

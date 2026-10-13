@@ -187,9 +187,9 @@
     });
     box.appendChild(cards);
     if (t.caveat) box.appendChild(el("p", "caveat", t.caveat));
-    if (t.limits && t.limits.length) {
-      var lb = el("div", "limits"); lb.appendChild(el("strong", null, "Limitations"));
-      var lu = el("ul"); t.limits.forEach(function (x) { lu.appendChild(el("li", null, x)); }); lb.appendChild(lu); box.appendChild(lb);
+    if (t.limits) {
+      var lp = el("p", "limits"); lp.appendChild(el("strong", null, "Limitations. ")); lp.appendChild(document.createTextNode(t.limits + " "));
+      var lk = el("button", "notebtn", "See the About page for details."); lk.type = "button"; lk.setAttribute("data-goto", "limitations"); lp.appendChild(lk); box.appendChild(lp);
     }
     box.appendChild(el("p", "closing", t.note));
   }
@@ -358,6 +358,15 @@
       });
     });
     $("impactBtn").addEventListener("click", function () { location.hash = "#feedback"; });
+    // links such as "See the About page for details" open the About page and scroll to the named section
+    document.addEventListener("click", function (e) {
+      var g = e.target.closest ? e.target.closest("[data-goto]") : null;
+      if (!g) return;
+      var id = g.getAttribute("data-goto");
+      if (location.hash === "#about") { var h = $(id); if (h) h.scrollIntoView(); return; }
+      location.hash = "#about";
+      setTimeout(function () { var h = $(id); if (h) h.scrollIntoView(); }, 150);
+    });
     $("toCouple").addEventListener("click", function () {
       if (window.Couple) Couple.prefill(readInputs());   // carries the choices across to the "You" side
       location.hash = "#couple";
@@ -373,7 +382,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261013h").then(function (r) {
+  fetch("data.json?v=20261013i").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {
