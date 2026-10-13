@@ -384,7 +384,7 @@
   }
 
   window.addEventListener("hashchange", showTab);
-  fetch("data.json?v=20261014b").then(function (r) {
+  fetch("data.json?v=20261014c").then(function (r) {
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function (d) { data = d; init(); }).catch(function () {

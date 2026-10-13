@@ -101,7 +101,7 @@
     well.appendChild(homeBits);
     var incField = field("Total Personal Weekly Income", select("c_inc_" + p,
       [["<499", "<$499"], ["500-999", "$500–$999"], ["1000+", "$1,000+"], ["missing", "missing"]]), "income");
-    incField.appendChild(el("p", "note", "Weekly income from all sources before tax, not only wages from work. It includes government pensions and allowances such as the age pension, income from superannuation, and investment, rent and business income."));
+    incField.appendChild(el("p", "note", "Weekly income from all sources before tax, including government pensions and allowances such as the age pension, income from superannuation, and investment, rent and business income."));
     well.appendChild(incField);
     well.appendChild(field("Marital Status", select("c_mar_" + p, [["Single", "Not currently married"], ["Married", "Married"]]), "marital"));
     return well;
