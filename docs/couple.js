@@ -99,8 +99,10 @@
     homeBits.appendChild(areaBlock(p));
     homeBits.appendChild(field("Home Ownership", select("c_home_" + p, [["No", "No"], ["Yes", "Yes (outright or mortgage)"], ["missing", "missing"]]), "home"));
     well.appendChild(homeBits);
-    well.appendChild(field("Total Personal Weekly Income", select("c_inc_" + p,
-      [["<499", "<$499"], ["500-999", "$500–$999"], ["1000+", "$1,000+"], ["missing", "missing"]]), "income"));
+    var incField = field("Total Personal Weekly Income", select("c_inc_" + p,
+      [["<499", "<$499"], ["500-999", "$500–$999"], ["1000+", "$1,000+"], ["missing", "missing"]]), "income");
+    incField.appendChild(el("p", "note", "Weekly income from all sources before tax, not only wages from work. It includes government pensions and allowances such as the age pension, income from superannuation, and investment, rent and business income."));
+    well.appendChild(incField);
     well.appendChild(field("Marital Status", select("c_mar_" + p, [["Single", "Not currently married"], ["Married", "Married"]]), "marital"));
     return well;
   }
