@@ -73,15 +73,24 @@
 
   function areaBlock(p) {
     var box = el("div");
-    box.appendChild(radioGroup("c_geo_" + p, "Area socio-economic measure (IRSAD) from:",
-      [["irsad", "IRSAD Decile"], ["postcode", "Postcode"]], "postcode"));
+    var rg = radioGroup("c_geo_" + p, "Area socio-economic measure (IRSAD) from:",
+      [["irsad", "IRSAD Decile"], ["postcode", "Postcode"]], "postcode");
+    rg.insertBefore(el("p", "note choicehint", "If you know the IRSAD decile for your own local area, choose IRSAD Decile, which is more accurate."), rg.children[1]);
+    box.appendChild(rg);
     var pcWrap = el("div", "field"), pcLab = el("label", null, "Postcode"); pcLab.setAttribute("for", "c_pc_" + p);
+    var pcInfo = document.querySelector("label[for=postcode] a.info");
+    if (pcInfo) { pcLab.appendChild(document.createTextNode(" ")); pcLab.appendChild(pcInfo.cloneNode(true)); }
     var pc = el("input"); pc.type = "text"; pc.id = "c_pc_" + p; pc.value = "2000"; pc.setAttribute("inputmode", "numeric"); pc.maxLength = 12;
     var note = el("div", "note"); note.id = "c_pcnote_" + p; note.setAttribute("aria-live", "polite");
     pcWrap.id = "c_pcbox_" + p; pcWrap.appendChild(pcLab); pcWrap.appendChild(pc); pcWrap.appendChild(note);
     var dec = select("c_dec_" + p, []); for (var d = 1; d <= 10; d++) { var o = el("option", null, "D" + d); o.value = "D" + d; dec.appendChild(o); }
     dec.value = "D5";
-    var decWrap = field("IRSAD Decile", dec); decWrap.id = "c_decbox_" + p; decWrap.hidden = true;
+    var decWrap = field("IRSAD Decile", dec, "irsad"); decWrap.id = "c_decbox_" + p; decWrap.hidden = true;
+    var decNote = el("p", "note", "IRSAD deciles are from SEIFA 2016, based on the 2016 Census. To find the decile for your own local area, use the ");
+    var mapLink = el("a", null, "ABS 2016 IRSAD map"); mapLink.href = "https://maps.abs.gov.au/SEIFAMaps/seifaIRSADmap.html"; mapLink.target = "_blank"; mapLink.rel = "noopener";
+    decNote.appendChild(mapLink);
+    decNote.appendChild(document.createTextNode(" and divide the percentile it shows by ten, rounding up (for example, 11 gives decile 2)."));
+    decWrap.appendChild(decNote);
     box.appendChild(pcWrap); box.appendChild(decWrap); return box;
   }
 
@@ -167,6 +176,12 @@
         ? "The ABS did not publish an IRSAD for this postcode, usually because few people live there or too few census responses were available. Please try a nearby postcode, or use the IRSAD Decile option if you know your decile."
         : "Postcode not found in ABS SEIFA 2016 Table 1. Check the postcode, try a nearby one, or use the IRSAD Decile option if you know your decile.";
       box.appendChild(s);
+      var sw = el("button", "notebtn", "Use the IRSAD Decile option"); sw.type = "button";
+      sw.addEventListener("click", function () {
+        var r = document.querySelector('input[name="c_geo_' + p + '"][value="irsad"]');
+        r.checked = true; r.dispatchEvent(new Event("change", { bubbles: true })); $("c_dec_" + p).focus();
+      });
+      var swWrap = el("div"); swWrap.appendChild(sw); box.appendChild(swWrap);
     } else {
       s.appendChild(document.createTextNode("The IRSAD decile for this postcode is ")); s.appendChild(el("strong", null, res.decile)); s.appendChild(document.createTextNode("."));
       box.appendChild(s); box.appendChild(document.createElement("br"));
